@@ -1,26 +1,103 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --font-size-heading1-bold: 36px;
+  --font-size-heading1-semibold: 36px;
+  --font-size-heading2-bold: 30px;
+  --font-size-heading2-semibold: 30px;
+  --font-size-heading3-bold: 24px;
+  --font-size-heading4-medium: 20px;
+  --font-size-body-bold: 18px;
+  --font-size-body-semibold: 18px;
+  --font-size-body-medium: 18px;
+  --font-size-body-normal: 18px;
+  --font-size-body1-bold: 18px;
+  --font-size-base-regular: 16px;
+  --font-size-base-medium: 16px;
+  --font-size-base-semibold: 16px;
+  --font-size-base1-semibold: 16px;
+  --font-size-small-regular: 14px;
+  --font-size-small-medium: 14px;
+  --font-size-small-semibold: 14px;
+  --font-size-subtle-medium: 12px;
+  --font-size-subtle-semibold: 12px;
+  --font-size-tiny-medium: 10px;
+  --font-size-x-small-semibold: 7px;
+
+  --color-primary-500: #877eff;
+  --color-secondary-500: #ffb620;
+  --color-blue: #0095f6;
+  --color-logout-btn: #ff5a5a;
+  --color-navbar-menu: rgba(16, 16, 18, 0.6);
+  --color-dark-1: #000000;
+  --color-dark-2: #121417;
+  --color-dark-3: #101012;
+  --color-dark-4: #1f1f22;
+  --color-light-1: #ffffff;
+  --color-light-2: #efefef;
+  --color-light-3: #7878a3;
+  --color-light-4: #5c5c7b;
+  --color-gray-1: #697c89;
+  --color-glassmorphism: rgba(16, 16, 18, 0.6);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* If you're using the old @layer syntax, remove it and use direct classes */
+
+.main-container {
+  display: flex;
+  min-height: 100vh;
+  flex: 1;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--color-dark-1);
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-bottom: 2.5rem;
+  padding-top: 7rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (max-width: 768px) {
+  .main-container {
+    padding-bottom: 8rem;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@media (min-width: 640px) {
+  .main-container {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+.head-text {
+  font-size: var(--font-size-heading2-bold);
+  font-weight: 700;
+  color: var(--color-light-1);
+}
+
+/* Continue converting all your utility classes... */
+
+/* Custom scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #09090a;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #5c5c7b;
+  border-radius: 50px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #7878a3;
+}
+
+/* CSS invert utility */
+.css-invert {
+  filter: invert(50%) brightness(200%);
 }
