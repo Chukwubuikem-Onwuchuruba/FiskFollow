@@ -1,6 +1,7 @@
 @import "tailwindcss";
 
 @theme {
+  /* Font Sizes */
   --font-size-heading1-bold: 36px;
   --font-size-heading1-semibold: 36px;
   --font-size-heading2-bold: 30px;
@@ -24,6 +25,7 @@
   --font-size-tiny-medium: 10px;
   --font-size-x-small-semibold: 7px;
 
+  /* Colors */
   --color-primary-500: #877eff;
   --color-secondary-500: #ffb620;
   --color-blue: #0095f6;
@@ -39,10 +41,17 @@
   --color-light-4: #5c5c7b;
   --color-gray-1: #697c89;
   --color-glassmorphism: rgba(16, 16, 18, 0.6);
+
+  /* Screens */
+  --breakpoint-xs: 400px;
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1400px;
 }
 
-/* If you're using the old @layer syntax, remove it and use direct classes */
-
+/* Main Container */
 .main-container {
   display: flex;
   min-height: 100vh;
@@ -56,28 +65,308 @@
   padding-top: 7rem;
 }
 
-@media (max-width: 768px) {
+@media (width < --breakpoint-md) {
   .main-container {
     padding-bottom: 8rem;
   }
 }
 
-@media (min-width: 640px) {
+@media (width >= --breakpoint-sm) {
   .main-container {
     padding-left: 2.5rem;
     padding-right: 2.5rem;
   }
 }
 
+/* Head Text */
 .head-text {
   font-size: var(--font-size-heading2-bold);
   font-weight: 700;
   color: var(--color-light-1);
 }
 
-/* Continue converting all your utility classes... */
+/* Activity Card */
+.activity-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.375rem;
+  background-color: var(--color-dark-2);
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
 
-/* Custom scrollbar */
+/* No Result */
+.no-result {
+  text-align: center;
+  font-size: var(--font-size-base-regular);
+  font-weight: 400;
+  color: var(--color-light-3);
+}
+
+/* Community Card */
+.community-card {
+  width: 100%;
+  border-radius: 0.5rem;
+  background-color: var(--color-dark-3);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+@media (width >= --breakpoint-sm) {
+  .community-card {
+    width: 24rem;
+  }
+}
+
+.community-card_btn {
+  border-radius: 0.5rem;
+  background-color: var(--color-primary-500);
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  padding-top: 0.375rem;
+  padding-bottom: 0.375rem;
+  font-size: var(--font-size-small-regular);
+  font-weight: 400;
+  color: var(--color-light-1);
+}
+
+/* Thread Card Bar */
+.thread-card_bar {
+  position: relative;
+  margin-top: 0.5rem;
+  width: 0.125rem;
+  flex: 1 1 auto;
+  border-radius: 9999px;
+  background-color: #262626;
+}
+
+/* User Card */
+.user-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+@media (width < --breakpoint-xs) {
+  .user-card {
+    border-radius: 0.75rem;
+    background-color: var(--color-dark-3);
+    padding: 1rem;
+  }
+}
+
+@media (width >= --breakpoint-xs) {
+  .user-card {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.user-card_avatar {
+  display: flex;
+  flex: 1 1 0%;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 0.75rem;
+}
+
+@media (width >= --breakpoint-xs) {
+  .user-card_avatar {
+    align-items: center;
+  }
+}
+
+.user-card_btn {
+  height: auto;
+  min-width: 74px;
+  border-radius: 0.5rem;
+  background-color: var(--color-primary-500);
+  font-size: 12px;
+  color: var(--color-light-1);
+}
+
+/* Searchbar */
+.searchbar {
+  display: flex;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  background-color: var(--color-dark-3);
+  padding-left: 1rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.searchbar_input {
+  border: none;
+  background-color: var(--color-dark-3);
+  font-size: var(--font-size-base-regular);
+  font-weight: 400;
+  color: var(--color-light-4);
+  outline: none;
+}
+
+/* Topbar */
+.topbar {
+  position: fixed;
+  top: 0;
+  z-index: 30;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-dark-2);
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+}
+
+/* Bottombar */
+.bottombar {
+  position: fixed;
+  bottom: 0;
+  z-index: 10;
+  width: 100%;
+  border-top-left-radius: 1.5rem;
+  border-top-right-radius: 1.5rem;
+  background-color: var(--color-glassmorphism);
+  padding: 1rem;
+  backdrop-filter: blur(12px);
+}
+
+@media (width >= --breakpoint-xs) {
+  .bottombar {
+    padding-left: 1.75rem;
+    padding-right: 1.75rem;
+  }
+}
+
+@media (width >= --breakpoint-md) {
+  .bottombar {
+    display: none;
+  }
+}
+
+.bottombar_container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+@media (width >= --breakpoint-xs) {
+  .bottombar_container {
+    gap: 1.25rem;
+  }
+}
+
+.bottombar_link {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+@media (width >= --breakpoint-sm) {
+  .bottombar_link {
+    flex: 1 1 0%;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    padding-top: 0.625rem;
+    padding-bottom: 0.625rem;
+  }
+}
+
+/* Left Sidebar */
+.leftsidebar {
+  position: sticky;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  height: 100vh;
+  width: fit-content;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: auto;
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-right-color: var(--color-dark-4);
+  background-color: var(--color-dark-2);
+  padding-bottom: 1.25rem;
+  padding-top: 7rem;
+}
+
+@media (width < --breakpoint-md) {
+  .leftsidebar {
+    display: none;
+  }
+}
+
+.leftsidebar_link {
+  position: relative;
+  display: flex;
+  justify-content: flex-start;
+  gap: 1rem;
+  border-radius: 0.5rem;
+  padding: 1rem;
+}
+
+/* Pagination */
+.pagination {
+  margin-top: 2.5rem;
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+/* Right Sidebar */
+.rightsidebar {
+  position: sticky;
+  right: 0;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  height: 100vh;
+  width: fit-content;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 3rem;
+  overflow: auto;
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-left-color: var(--color-dark-4);
+  background-color: var(--color-dark-2);
+  padding-left: 2.5rem;
+  padding-right: 2.5rem;
+  padding-bottom: 1.5rem;
+  padding-top: 7rem;
+}
+
+@media (width < --breakpoint-xl) {
+  .rightsidebar {
+    display: none;
+  }
+}
+
+/* Utilities */
+.css-invert {
+  filter: invert(50%) brightness(200%);
+}
+
+/* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 3px;
   height: 3px;
@@ -97,7 +386,115 @@
   background: #7878a3;
 }
 
-/* CSS invert utility */
-.css-invert {
-  filter: invert(50%) brightness(200%);
+/* Clerk Responsive Fix */
+.cl-organizationSwitcherTrigger .cl-userPreview .cl-userPreviewTextContainer,
+.cl-organizationSwitcherTrigger
+  .cl-organizationPreview
+  .cl-organizationPreviewTextContainer {
+  display: none;
+}
+
+@media (width >= --breakpoint-sm) {
+  .cl-organizationSwitcherTrigger .cl-userPreview .cl-userPreviewTextContainer,
+  .cl-organizationSwitcherTrigger
+    .cl-organizationPreview
+    .cl-organizationPreviewTextContainer {
+    display: block;
+  }
+}
+
+/* Tab Component */
+.tab {
+  display: flex;
+  min-height: 50px;
+  flex: 1 1 0%;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: var(--color-dark-2);
+  color: var(--color-light-2);
+}
+
+.tab[data-state="active"] {
+  background-color: #0e0e12;
+  color: var(--color-light-2);
+}
+
+/* No Focus */
+.no-focus:focus-visible {
+  outline: none;
+  outline-offset: 0;
+  box-shadow: none;
+}
+
+/* Account Form Image Label */
+.account-form_image-label {
+  display: flex;
+  height: 6rem;
+  width: 6rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--color-dark-4);
+}
+
+/* Account Form Image Input */
+.account-form_image-input {
+  cursor: pointer;
+  border: none;
+  background-color: transparent;
+  outline: none;
+}
+
+.account-form_image-input::file-selector-button {
+  color: var(--color-blue);
+}
+
+/* Account Form Input */
+.account-form_input {
+  border-width: 1px;
+  border-style: solid;
+  border-color: var(--color-dark-4);
+  background-color: var(--color-dark-3);
+  color: var(--color-light-1);
+}
+
+/* Comment Form */
+.comment-form {
+  margin-top: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-top-width: 1px;
+  border-bottom-width: 1px;
+  border-top-style: solid;
+  border-bottom-style: solid;
+  border-top-color: var(--color-dark-4);
+  border-bottom-color: var(--color-dark-4);
+  padding-top: 1.25rem;
+  padding-bottom: 1.25rem;
+}
+
+@media (width < --breakpoint-xs) {
+  .comment-form {
+    flex-direction: column;
+  }
+}
+
+/* Comment Form Button */
+.comment-form_btn {
+  border-radius: 1.5rem;
+  background-color: var(--color-primary-500);
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  font-size: var(--font-size-small-regular);
+  font-weight: 400;
+  color: var(--color-light-1);
+}
+
+@media (width < --breakpoint-xs) {
+  .comment-form_btn {
+    width: 100%;
+  }
 }
