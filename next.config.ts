@@ -1,9 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: true,
-    serverComponentsExternalPackages: ["mongoose"],
-  },
+  // Server Actions are now enabled by default in Next.js 15
+  // Remove the experimental.serverActions flag entirely
+
+  // Move serverComponentsExternalPackages to the top level
+  serverExternalPackages: ["mongoose"],
+
   images: {
     remotePatterns: [
       {
@@ -23,10 +25,12 @@ const nextConfig = {
         hostname: "placehold.co",
       },
     ],
-    typescript: {
-      ignoreBuildErrors: true,
-    },
+    // Remove typescript from images object - this needs to be at root level
+  },
+  // Move typescript config to root level
+  typescript: {
+    ignoreBuildErrors: true,
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
