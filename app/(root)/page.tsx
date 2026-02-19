@@ -1,10 +1,10 @@
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-import ThreadCard from "@/components/cards/ThreadCard";
+import PostCard from "@/components/cards/PostCard";
 import Pagination from "@/components/shared/Pagination";
 
-import { fetchPosts } from "@/lib/actions/thread.actions";
+import { fetchPosts } from "@/lib/actions/post.actions";
 import { fetchUser } from "@/lib/actions/user.actions";
 
 async function Home({
@@ -33,7 +33,7 @@ async function Home({
         ) : (
           <>
             {result.posts.map((post) => (
-              <ThreadCard
+              <PostCard
                 key={post._id}
                 id={post._id}
                 currentUserId={user.id}

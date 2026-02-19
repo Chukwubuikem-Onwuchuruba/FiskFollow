@@ -4,7 +4,7 @@ import { FilterQuery, SortOrder } from "mongoose";
 import { revalidatePath } from "next/cache";
 
 import Community from "../models/community.model";
-import Thread from "../models/thread.model";
+import Post from "../models/post.model";
 import User from "../models/user.model";
 
 import { connectToDB } from "../mongoose";
@@ -66,10 +66,10 @@ export async function fetchUserPosts(userId: string) {
   try {
     connectToDB();
 
-    // Find all threads authored by the user with the given userId
-    const threads = await User.findOne({ id: userId }).populate({
-      path: "threads",
-      model: Thread,
+    // Find all posts authored by the user with the given userId
+    const posts = await User.findOne({ id: userId }).populate({
+      path: "posts",
+      model: Post,
       populate: [
         {
           path: "community",
@@ -78,7 +78,7 @@ export async function fetchUserPosts(userId: string) {
         },
         {
           path: "children",
-          model: Thread,
+          model: Post,
           populate: {
             path: "author",
             model: User,
@@ -87,14 +87,14 @@ export async function fetchUserPosts(userId: string) {
         },
       ],
     });
-    return threads;
+    return posts;
   } catch (error) {
-    console.error("Error fetching user threads:", error);
+    console.error("Error fetching user posts:", error);
     throw error;
   }
 }
 
-// Almost similar to Thead (search + pagination) and Community (search + pagination)
+// Almost similar to Post (search + pagination) and Community (search + pagination)
 export async function fetchUsers({
   userId,
   searchString = "",
@@ -157,18 +157,18 @@ export async function getActivity(userId: string) {
   try {
     connectToDB();
 
-    // Find all threads created by the user
-    const userThreads = await Thread.find({ author: userId });
+    // Find all posts created by the user
+    const userPosts = await Post.find({ author: userId });
 
-    // Collect all the child thread ids (replies) from the 'children' field of each user thread
-    const childThreadIds = userThreads.reduce((acc, userThread) => {
-      return acc.concat(userThread.children);
+    // Collect all the child post ids (replies) from the 'children' field of each user post
+    const childPostIds = userPosts.reduce((acc, userPost) => {
+      return acc.concat(userPost.children);
     }, []);
 
-    // Find and return the child threads (replies) excluding the ones created by the same user
-    const replies = await Thread.find({
-      _id: { $in: childThreadIds },
-      author: { $ne: userId }, // Exclude threads authored by the same user
+    // Find and return the child posts (replies) excluding the ones created by the same user
+    const replies = await Post.find({
+      _id: { $in: childPostIds },
+      author: { $ne: userId }, // Exclude posts authored by the same user
     }).populate({
       path: "author",
       model: User,
