@@ -14,6 +14,11 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  classification: {
+    type: String,
+    enum: ["Freshman", "Sophomore", "Junior", "Senior"],
+    required: true,
+  },
   image: String,
   bio: String,
   posts: [

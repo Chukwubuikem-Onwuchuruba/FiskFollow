@@ -10,6 +10,9 @@ export const UserValidation = z.object({
     .string()
     .min(3, { error: "Minimum 3 characters." })
     .max(30, { error: "Maximum 30 caracters." }),
+  classification: z.enum(["Freshman", "Sophomore", "Junior", "Senior"], {
+    message: "Please select a classification",
+  }),
   bio: z
     .string()
     .min(3, { error: "Minimum 3 characters." })

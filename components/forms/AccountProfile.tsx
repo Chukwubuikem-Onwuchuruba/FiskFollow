@@ -15,6 +15,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -24,9 +31,11 @@ import { isBase64Image } from "@/lib/utils";
 
 import { UserValidation } from "@/lib/validations/user";
 import { updateUser } from "@/lib/actions/user.actions";
+import type { UserValidationType } from "@/lib/validations/user";
 
 interface Props {
   user: {
+    classification: UserValidationType["classification"];
     id: string;
     objectId: string;
     username: string;
@@ -51,6 +60,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       name: user?.name ? user.name : "",
       username: user?.username ? user.username : "",
       bio: user?.bio ? user.bio : "",
+      classification: user?.classification || "Freshman",
     },
   });
 
@@ -73,6 +83,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
       userId: user.id,
       bio: values.bio,
       image: values.profile_photo,
+      classification: values.classification,
     });
 
     if (pathname === "/profile/edit") {
@@ -162,6 +173,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   type="text"
                   className="account-form_input no-focus"
                   {...field}
+                  placeholder="John Doe"
                 />
               </FormControl>
               <FormMessage />
@@ -182,6 +194,7 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   type="text"
                   className="account-form_input no-focus"
                   {...field}
+                  placeholder="Something cool perhaps..."
                 />
               </FormControl>
               <FormMessage />
@@ -202,8 +215,35 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                   rows={10}
                   className="account-form_input no-focus"
                   {...field}
+                  placeholder="What should fellow Fiskites know about you?"
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="classification"
+          render={({ field }) => (
+            <FormItem className="flex w-full flex-col gap-3">
+              <FormLabel className="text-base-semibold text-light-2">
+                Classification
+              </FormLabel>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl>
+                  <SelectTrigger className="account-form_input no-focus">
+                    <SelectValue placeholder="Select your classification" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-dark-3 text-light-1 border-dark-4">
+                  <SelectItem value="Freshman">Freshman</SelectItem>
+                  <SelectItem value="Sophomore">Sophomore</SelectItem>
+                  <SelectItem value="Junior">Junior</SelectItem>
+                  <SelectItem value="Senior">Senior</SelectItem>
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
