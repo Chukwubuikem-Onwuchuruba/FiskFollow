@@ -53,9 +53,24 @@ interface Params {
   author: string;
   communityId: string | null;
   path: string;
+  images?: string[];
 }
 
-export async function createPost({ text, author, communityId, path }: Params) {
+interface AddCommentParams {
+  postId: string;
+  commentText: string;
+  userId: string;
+  path: string;
+  images?: string[];
+}
+
+export async function createPost({
+  text,
+  author,
+  communityId,
+  path,
+  images = [],
+}: Params) {
   try {
     connectToDB();
 
@@ -68,6 +83,7 @@ export async function createPost({ text, author, communityId, path }: Params) {
       text,
       author,
       community: communityIdObject, // Assign communityId if provided, or leave it null for personal account
+      images,
     });
 
     // Update User model
@@ -196,12 +212,13 @@ export async function fetchPostById(postId: string) {
   }
 }
 
-export async function addCommentToPost(
-  postId: string,
-  commentText: string,
-  userId: string,
-  path: string,
-) {
+export async function addCommentToPost({
+  postId,
+  commentText,
+  userId,
+  path,
+  images = [],
+}: AddCommentParams) {
   connectToDB();
 
   try {
@@ -217,6 +234,7 @@ export async function addCommentToPost(
       text: commentText,
       author: userId,
       parentId: postId, // Set the parentId to the original post's ID
+      images,
     });
 
     // Save the comment post to the database

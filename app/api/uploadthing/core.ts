@@ -38,6 +38,22 @@ export const ourFileRouter = {
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
     }),
+  // Add this new route for post images
+  postImage: f({
+    image: {
+      maxFileSize: "4MB",
+      maxFileCount: 4, // Allow up to 4 images per post
+    },
+  })
+    .middleware(async ({ req }) => {
+      const user = await getUser();
+      if (!user) throw new UploadThingError("Unauthorized");
+      return { userId: user.id };
+    })
+    .onUploadComplete(async ({ metadata, file }) => {
+      console.log("Post image uploaded for userId:", metadata.userId);
+      return { uploadedBy: metadata.userId };
+    }),
 } satisfies FileRouter;
 
 export type OurFileRouter = typeof ourFileRouter;

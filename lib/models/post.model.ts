@@ -27,6 +27,7 @@ const postSchema = new mongoose.Schema({
       ref: "Post",
     },
   ],
+  images: [{ type: String }],
 });
 
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);

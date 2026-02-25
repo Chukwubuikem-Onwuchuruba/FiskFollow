@@ -26,6 +26,7 @@ interface Props {
     };
   }[];
   isComment?: boolean;
+  images?: string[];
 }
 
 function PostCard({
@@ -38,6 +39,7 @@ function PostCard({
   createdAt,
   comments,
   isComment,
+  images = [],
 }: Props) {
   return (
     <article
@@ -66,8 +68,22 @@ function PostCard({
                 {author.name}
               </h4>
             </Link>
-
             <p className="mt-2 text-small-regular text-light-2">{content}</p>
+
+            {images && images.length > 0 && (
+              <div className="grid grid-cols-2 gap-2 mt-3">
+                {images.map((image: string, index: number) => (
+                  <div key={index} className="relative aspect-square">
+                    <Image
+                      src={image}
+                      alt={`Post image ${index + 1}`}
+                      fill
+                      className="rounded-lg object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
