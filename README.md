@@ -1,12 +1,12 @@
 # FiskFollow
 
-**FiskFollow** is a specialized social media web application designed exclusively for the Fisk University community[cite: 6, 11]. Inspired by systems like X and Threads, it provides a dedicated space for students to stay connected, share posts, and receive real-time updates on campus events and student life[cite: 12, 15].
+**FiskFollow** is a specialized social media web application designed exclusively for the Fisk University community]. Inspired by systems like X and Threads, it provides a dedicated space for students to stay connected, share posts, and receive real-time updates on campus events and student life.
 
 ---
 
 ## Project Description
 
-The goal of this project is to solve the issue of campus communication being spread across too many broad platforms—like group chats or Instagram—or overlooked emails[cite: 8, 10]. FiskFollow centralizes student interaction through a secure, responsive web interface[cite: 11, 22].
+The goal of this project is to solve the issue of campus communication being spread across too many broad platforms—like group chats or Instagram—or overlooked emails. FiskFollow centralizes student interaction through a secure, responsive web interface.
 
 ### Core Features
 
@@ -63,7 +63,6 @@ The application is built using the **MERN stack**, following modern full-stack w
 3.  **Environment Variables**:
     Create a `.env` file in the root directory and add your configuration:
     ```env
-    MONGO_URI=your_mongodb_connection_string
     NEXT_CLERK_WEBHOOK_SECRET=
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=
     CLERK_SECRET_KEY=
