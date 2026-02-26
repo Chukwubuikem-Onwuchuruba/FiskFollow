@@ -4,17 +4,33 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
 
 import { sidebarLinks } from "@/constants";
 
 const LeftSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const [isDesktop, setIsDesktop] = useState(false);
 
   const { userId, isLoaded } = useAuth();
 
+  useEffect(() => {
+    const checkScreenSize = () => {
+      setIsDesktop(window.innerWidth >= 768); // md breakpoint
+    };
+
+    checkScreenSize();
+    window.addEventListener("resize", checkScreenSize);
+
+    return () => window.removeEventListener("resize", checkScreenSize);
+  }, []);
+
   // Don't render until auth is loaded
   if (!isLoaded) return null;
+
+  // Don't render on mobile
+  if (!isDesktop) return null;
 
   return (
     <section className="custom-scrollbar leftsidebar">
