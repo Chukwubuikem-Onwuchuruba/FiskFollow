@@ -39,45 +39,55 @@ interface Props {
 }
 
 async function PostsTab({ currentUserId, accountId, accountType }: Props) {
-  let result: Result;
+  let result: Result | null = null;
 
-  if (accountType === "Community") {
-    result = await fetchCommunityPosts(accountId);
-  } else {
-    result = await fetchUserPosts(accountId);
+  try {
+    if (accountType === "Community") {
+      result = await fetchCommunityPosts(accountId);
+    } else {
+      result = await fetchUserPosts(accountId);
+    }
+  } catch (error) {
+    console.error("Error fetching posts:", error);
+    return <div className="text-light-1">Error loading posts</div>;
   }
 
-  if (!result) {
-    redirect("/");
+  // Check if result exists and has posts array
+  if (!result || !result.posts) {
+    return <p className="no-result">No posts found</p>; // Return message instead of redirect
   }
 
   return (
     <section className="mt-9 flex flex-col gap-10">
-      {result.posts.map((post) => (
-        <PostCard
-          key={post._id}
-          id={post._id}
-          currentUserId={currentUserId}
-          parentId={post.parentId}
-          content={post.text}
-          author={
-            accountType === "User"
-              ? { name: result.name, image: result.image, id: result.id }
-              : {
-                  name: post.author.name,
-                  image: post.author.image,
-                  id: post.author.id,
-                }
-          }
-          community={
-            accountType === "Community"
-              ? { name: result.name, id: result.id, image: result.image }
-              : post.community
-          }
-          createdAt={post.createdAt}
-          comments={post.children}
-        />
-      ))}
+      {result.posts.length === 0 ? (
+        <p className="no-result">No posts found</p>
+      ) : (
+        result.posts.map((post) => (
+          <PostCard
+            key={post._id}
+            id={post._id}
+            currentUserId={currentUserId}
+            parentId={post.parentId}
+            content={post.text}
+            author={
+              accountType === "User"
+                ? { name: result.name, image: result.image, id: result.id }
+                : {
+                    name: post.author.name,
+                    image: post.author.image,
+                    id: post.author.id,
+                  }
+            }
+            community={
+              accountType === "Community"
+                ? { name: result.name, id: result.id, image: result.image }
+                : post.community
+            }
+            createdAt={post.createdAt}
+            comments={post.children}
+          />
+        ))
+      )}
     </section>
   );
 }

@@ -10,22 +10,18 @@ import { fetchUser } from "@/lib/actions/user.actions";
 async function Home({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | undefined };
+  searchParams: Promise<{ [key: string]: string | undefined }>; // Change type to Promise
 }) {
-  const user = await currentUser();
-  // if (!user) return null;
+  // Await searchParams
+  const params = await searchParams;
 
-  if (!user) {
-    redirect("/sign-in");
-  }
+  const user = await currentUser();
+  if (!user) redirect("/sign-in");
 
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  const result = await fetchPosts(
-    searchParams.page ? +searchParams.page : 1,
-    30,
-  );
+  const result = await fetchPosts(params.page ? +params.page : 1, 30);
 
   return (
     <>
@@ -47,6 +43,7 @@ async function Home({
                 community={post.community}
                 createdAt={post.createdAt}
                 comments={post.children}
+                images={post.images}
               />
             ))}
           </>
@@ -55,7 +52,7 @@ async function Home({
 
       <Pagination
         path="/"
-        pageNumber={searchParams?.page ? +searchParams.page : 1}
+        pageNumber={params?.page ? +params.page : 1}
         isNext={result.isNext}
       />
     </>

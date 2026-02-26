@@ -13,10 +13,15 @@ export async function fetchUser(userId: string) {
   try {
     connectToDB();
 
-    return await User.findOne({ id: userId }).populate({
-      path: "communities",
-      model: Community,
-    });
+    return await User.findOne({ id: userId })
+      .populate({
+        path: "communities",
+        model: Community,
+      })
+      .populate({
+        path: "posts",
+        model: Post,
+      });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
@@ -70,14 +75,14 @@ export async function fetchUserPosts(userId: string) {
     connectToDB();
 
     // Find all posts authored by the user with the given userId
-    const posts = await User.findOne({ id: userId }).populate({
+    const user = await User.findOne({ id: userId }).populate({
       path: "posts",
       model: Post,
       populate: [
         {
           path: "community",
           model: Community,
-          select: "name id image _id", // Select the "name" and "_id" fields from the "Community" model
+          select: "name id image _id",
         },
         {
           path: "children",
@@ -85,15 +90,35 @@ export async function fetchUserPosts(userId: string) {
           populate: {
             path: "author",
             model: User,
-            select: "name image id", // Select the "name" and "_id" fields from the "User" model
+            select: "name image id",
           },
         },
       ],
     });
-    return posts;
+
+    if (!user) {
+      return {
+        name: "",
+        image: "",
+        id: "",
+        posts: [],
+      };
+    }
+
+    return {
+      name: user.name,
+      image: user.image,
+      id: user.id,
+      posts: user.posts || [],
+    };
   } catch (error) {
     console.error("Error fetching user posts:", error);
-    throw error;
+    return {
+      name: "",
+      image: "",
+      id: userId,
+      posts: [],
+    };
   }
 }
 

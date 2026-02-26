@@ -11,7 +11,10 @@ const LeftSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const { userId } = useAuth();
+  const { userId, isLoaded } = useAuth();
+
+  // Don't render until auth is loaded
+  if (!isLoaded) return null;
 
   return (
     <section className="custom-scrollbar leftsidebar">
@@ -21,11 +24,19 @@ const LeftSidebar = () => {
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
 
-          if (link.route === "/profile") link.route = `${link.route}/${userId}`;
+          // Handle profile route
+          let href = link.route;
+          if (link.route === "/profile") {
+            if (userId) {
+              href = `/profile/${userId}`;
+            } else {
+              href = "/sign-in"; // Redirect to sign-in if no user
+            }
+          }
 
           return (
             <Link
-              href={link.route}
+              href={href}
               key={link.label}
               className={`leftsidebar_link ${isActive && "bg-primary-500 "}`}
             >

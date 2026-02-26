@@ -11,10 +11,17 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchUser } from "@/lib/actions/user.actions";
 
 async function Page({ params }: { params: { id: string } }) {
+  const { id } = await params;
+
   const user = await currentUser();
   if (!user) return null;
 
-  const userInfo = await fetchUser(params.id);
+  const userInfo = await fetchUser(id);
+
+  if (!userInfo) {
+    return <div>User not found</div>;
+  }
+
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   return (
@@ -44,7 +51,7 @@ async function Page({ params }: { params: { id: string } }) {
 
                 {tab.label === "Posts" && (
                   <p className="ml-1 rounded-sm bg-light-4 px-2 py-1 text-tiny-medium! text-light-2">
-                    {userInfo.posts.length}
+                    {userInfo.posts?.length || 0}
                   </p>
                 )}
               </TabsTrigger>
