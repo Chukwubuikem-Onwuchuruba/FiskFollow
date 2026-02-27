@@ -89,7 +89,7 @@ function PostCard({
               <div className="flex gap-3.5">
                 <Image
                   src="/assets/heart-gray.svg"
-                  alt="heart"
+                  alt="like"
                   width={24}
                   height={24}
                   className="cursor-pointer object-contain"
@@ -97,22 +97,15 @@ function PostCard({
                 <Link href={`/post/${id}`}>
                   <Image
                     src="/assets/reply.svg"
-                    alt="heart"
+                    alt="comment"
                     width={24}
                     height={24}
                     className="cursor-pointer object-contain"
                   />
                 </Link>
                 <Image
-                  src="/assets/repost.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
-                <Image
-                  src="/assets/share.svg"
-                  alt="heart"
+                  src="/assets/repost_2734827.png"
+                  alt="repost"
                   width={24}
                   height={24}
                   className="cursor-pointer object-contain"

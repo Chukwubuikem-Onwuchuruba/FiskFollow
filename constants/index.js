@@ -33,8 +33,8 @@ export const sidebarLinks = [
 
 export const profileTabs = [
   { value: "posts", label: "Posts", icon: "/assets/reply.svg" },
-  { value: "media", label: "Media", icon: "/assets/members.svg" },
-  { value: "likes", label: "Likes", icon: "/assets/tag.svg" },
+  { value: "media", label: "Media", icon: "/assets/images-duotone.svg" },
+  { value: "likes", label: "Likes", icon: "/assets/heart-fill.svg" },
 ];
 
 export const communityTabs = [
