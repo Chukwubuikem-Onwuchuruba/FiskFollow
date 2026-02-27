@@ -9,8 +9,9 @@ import { fetchPostById } from "@/lib/actions/post.actions";
 
 export const revalidate = 0;
 
-async function page({ params }: { params: { id: string } }) {
-  if (!params.id) return null;
+async function page({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  if (!id) return null;
 
   const user = await currentUser();
   if (!user) return null;
@@ -18,7 +19,8 @@ async function page({ params }: { params: { id: string } }) {
   const userInfo = await fetchUser(user.id);
   if (!userInfo?.onboarded) redirect("/onboarding");
 
-  const post = await fetchPostById(params.id);
+  const post = await fetchPostById(id);
+  if (!post) return null;
 
   return (
     <section className="relative">
@@ -32,12 +34,13 @@ async function page({ params }: { params: { id: string } }) {
           community={post.community}
           createdAt={post.createdAt}
           comments={post.children}
+          images={post.images}
         />
       </div>
 
       <div className="mt-7">
         <Comment
-          postId={params.id}
+          postId={id}
           currentUserImg={user.imageUrl}
           currentUserId={JSON.stringify(userInfo._id)}
         />
@@ -55,6 +58,7 @@ async function page({ params }: { params: { id: string } }) {
             community={childItem.community}
             createdAt={childItem.createdAt}
             comments={childItem.children}
+            images={childItem.images}
             isComment
           />
         ))}

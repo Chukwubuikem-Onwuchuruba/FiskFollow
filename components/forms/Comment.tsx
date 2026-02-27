@@ -21,6 +21,7 @@ import { Button } from "../ui/button";
 import { CommentValidation } from "@/lib/validations/post";
 import { addCommentToPost } from "@/lib/actions/post.actions";
 import { useUploadThing } from "@/lib/uploadthing";
+import { Textarea } from "../ui/textarea";
 import { isBase64Image } from "@/lib/utils";
 
 interface Props {
@@ -137,8 +138,7 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
                 />
               </FormLabel>
               <FormControl className="border-none bg-transparent">
-                <Input
-                  type="text"
+                <Textarea
                   {...field}
                   placeholder="Comment..."
                   className="no-focus text-light-1 outline-none"

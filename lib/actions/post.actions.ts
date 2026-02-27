@@ -198,7 +198,7 @@ export async function fetchPostById(postId: string) {
             populate: {
               path: "author", // Populate the author field within nested children
               model: User,
-              select: "_id id name parentId image", // Select only _id and username fields of the author
+              select: "_id id name parentId image",
             },
           },
         ],
