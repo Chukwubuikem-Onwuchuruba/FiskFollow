@@ -5,7 +5,8 @@ import Image from "next/image";
 import { Resolver, useForm } from "react-hook-form";
 import { usePathname } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useRef } from "react";
+import { Paperclip, X } from "lucide-react";
 
 import {
   Form,
@@ -15,14 +16,12 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 
-import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 
 import { CommentValidation } from "@/lib/validations/post";
 import { addCommentToPost } from "@/lib/actions/post.actions";
 import { useUploadThing } from "@/lib/uploadthing";
 import { Textarea } from "../ui/textarea";
-import { isBase64Image } from "@/lib/utils";
 
 interface Props {
   postId: string;
@@ -36,6 +35,10 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
   const [files, setFiles] = useState<File[]>([]);
   const [imagePreviews, setImagePreviews] = useState<string[]>([]);
   const { startUpload } = useUploadThing("postImage");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
+  };
 
   const form = useForm<z.infer<typeof CommentValidation>>({
     resolver: zodResolver(CommentValidation) as Resolver<
@@ -119,15 +122,17 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
       setIsSubmitting(false);
     }
   };
-
   return (
     <Form {...form}>
-      <form className="comment-form" onSubmit={form.handleSubmit(onSubmit)}>
+      <form
+        className="comment-form flex flex-col gap-4"
+        onSubmit={form.handleSubmit(onSubmit)}
+      >
         <FormField
           control={form.control}
-          name="post"
+          name="images"
           render={({ field }) => (
-            <FormItem className="flex w-full items-center gap-3">
+            <FormItem className="flex w-full gap-3">
               <FormLabel>
                 <Image
                   src={currentUserImg}
@@ -137,81 +142,66 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
                   className="rounded-full object-cover"
                 />
               </FormLabel>
-              <FormControl className="border-none bg-transparent">
-                <Textarea
-                  {...field}
-                  placeholder="Comment..."
-                  className="no-focus text-light-1 outline-none"
-                  disabled={isSubmitting}
-                />
-              </FormControl>
-            </FormItem>
-          )}
-        />
 
-        {/* Image Upload Section */}
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-light-2">
-                Images (Optional - Max 4)
-              </FormLabel>
-              <FormControl>
-                <div className="flex flex-col gap-4">
-                  {/* Image previews */}
-                  {imagePreviews.length > 0 && (
-                    <div className="grid grid-cols-4 gap-2">
-                      {imagePreviews.map((preview, index) => (
-                        <div key={index} className="relative group">
-                          <Image
-                            src={preview}
-                            alt={`Preview ${index + 1}`}
-                            width={100}
-                            height={100}
-                            className="rounded-lg object-cover w-full h-24"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                            disabled={isSubmitting}
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              className="text-white"
-                            >
-                              <line x1="18" y1="6" x2="6" y2="18"></line>
-                              <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
+              <div className="flex flex-col w-full gap-3">
+                <FormControl>
+                  <>
+                    {/* Textarea + Icon Wrapper */}
+                    <div className="relative w-full">
+                      <Textarea
+                        {...field}
+                        placeholder="Comment..."
+                        className="pr-12 min-h-25 resize-none no-focus text-light-1 outline-none"
+                        disabled={isSubmitting}
+                      />
+
+                      {/* Attachment Icon */}
+                      <button
+                        type="button"
+                        onClick={triggerFileInput}
+                        className="absolute right-3 bottom-3 text-light-2 hover:text-primary-500 transition"
+                        disabled={isSubmitting}
+                      >
+                        <Paperclip size={18} />
+                      </button>
+
+                      {/* Hidden File Input */}
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        accept="image/*"
+                        multiple
+                        className="hidden"
+                        onChange={(e) => handleImage(e, field.onChange)}
+                      />
                     </div>
-                  )}
 
-                  {/* Upload button */}
-                  {files.length < 4 && (
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="account-form_image-input"
-                      onChange={(e) => handleImage(e, field.onChange)}
-                      disabled={isSubmitting}
-                    />
-                  )}
-                </div>
-              </FormControl>
+                    {imagePreviews.length > 0 && (
+                      <div className="grid grid-cols-4 gap-2 mt-3">
+                        {imagePreviews.map((preview, index) => (
+                          <div key={index} className="relative group">
+                            <Image
+                              src={preview}
+                              alt={`Preview ${index + 1}`}
+                              width={100}
+                              height={100}
+                              className="rounded-lg object-cover w-full h-24"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                              disabled={isSubmitting}
+                            >
+                              <X size={14} className="text-white" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                </FormControl>
+              </div>
             </FormItem>
           )}
         />

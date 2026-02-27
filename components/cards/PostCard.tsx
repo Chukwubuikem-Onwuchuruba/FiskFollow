@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { formatDateString } from "@/lib/utils";
 import DeletePost from "../forms/DeletePost";
+import { Heart, MessageCircleMore, Repeat2 } from "lucide-react";
 
 interface Props {
   id: string;
@@ -87,29 +88,13 @@ function PostCard({
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5">
-                <Image
-                  src="/assets/heart-gray.svg"
-                  alt="like"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
+                <Heart className="w-6 h-6 text-light-2 hover:text-red-500 cursor-pointer transition" />
+
                 <Link href={`/post/${id}`}>
-                  <Image
-                    src="/assets/reply.svg"
-                    alt="comment"
-                    width={24}
-                    height={24}
-                    className="cursor-pointer object-contain"
-                  />
+                  <MessageCircleMore className="w-6 h-6 text-light-2 hover:text-primary-500 cursor-pointer transition" />
                 </Link>
-                <Image
-                  src="/assets/repost_2734827.png"
-                  alt="repost"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
+
+                <Repeat2 className="w-6 h-6 text-light-2 hover:text-green-500 cursor-pointer transition" />
               </div>
 
               {isComment && comments.length > 0 && (

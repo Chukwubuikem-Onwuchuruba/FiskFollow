@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { usePathname, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 import Image from "next/image";
+import { Paperclip, X } from "lucide-react";
 
 import {
   Form,
@@ -18,13 +19,10 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
 
 import { PostValidation } from "@/lib/validations/post";
 import { createPost } from "@/lib/actions/post.actions";
 import { useUploadThing } from "@/lib/uploadthing";
-import { isBase64Image } from "@/lib/utils";
-import { X } from "lucide-react";
 
 interface Props {
   userId: string;
@@ -119,7 +117,7 @@ function MakePost({ userId }: Props) {
   return (
     <Form {...form}>
       <form
-        className="mt-10 flex flex-col justify-start gap-10"
+        className="mt-10 flex flex-col gap-6"
         onSubmit={form.handleSubmit(onSubmit)}
       >
         <FormField
@@ -130,27 +128,43 @@ function MakePost({ userId }: Props) {
               <FormLabel className="text-base-semibold text-light-2">
                 Content
               </FormLabel>
-              <FormControl className="no-focus border border-dark-4 bg-dark-3 text-light-1">
-                <Textarea rows={6} {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
 
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field }) => (
-            <FormItem className="flex w-full flex-col gap-3">
-              <FormLabel className="text-base-semibold text-light-2">
-                Images (Optional - Max 4)
-              </FormLabel>
               <FormControl>
-                <div className="flex flex-col gap-4">
-                  {/* Image previews */}
+                <>
+                  {/* Textarea + Attachment Icon Wrapper */}
+                  <div className="relative w-full">
+                    <Textarea
+                      {...field}
+                      placeholder="What's on your mind?"
+                      className="pr-12 min-h-35 resize-none no-focus border border-dark-4 bg-dark-3 text-light-1 outline-none"
+                    />
+
+                    {/* Attachment Icon */}
+                    {files.length < 4 && (
+                      <button
+                        type="button"
+                        onClick={() =>
+                          document.getElementById("post-image-upload")?.click()
+                        }
+                        className="absolute right-3 bottom-3 text-light-2 hover:text-primary-500 transition"
+                      >
+                        <Paperclip size={18} />
+                      </button>
+                    )}
+
+                    {/* Hidden File Input */}
+                    <input
+                      id="post-image-upload"
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => handleImage(e, () => {})}
+                    />
+                  </div>
+
                   {imagePreviews.length > 0 && (
-                    <div className="grid grid-cols-4 gap-2">
+                    <div className="grid grid-cols-4 gap-2 mt-3">
                       {imagePreviews.map((preview, index) => (
                         <div key={index} className="relative group">
                           <Image
@@ -162,7 +176,7 @@ function MakePost({ userId }: Props) {
                           />
                           <button
                             type="button"
-                            onClick={() => removeImage(index, field.onChange)}
+                            onClick={() => removeImage(index, () => {})}
                             className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             <X size={16} className="text-white" />
@@ -171,19 +185,9 @@ function MakePost({ userId }: Props) {
                       ))}
                     </div>
                   )}
-
-                  {/* Upload button */}
-                  {files.length < 4 && (
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      multiple
-                      className="account-form_image-input"
-                      onChange={(e) => handleImage(e, field.onChange)}
-                    />
-                  )}
-                </div>
+                </>
               </FormControl>
+
               <FormMessage />
             </FormItem>
           )}
