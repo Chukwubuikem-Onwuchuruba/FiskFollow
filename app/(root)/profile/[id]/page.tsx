@@ -6,6 +6,7 @@ import { profileTabs } from "@/constants";
 
 import PostsTab from "@/components/shared/PostsTab";
 import ProfileHeader from "@/components/shared/ProfileHeader";
+import FollowButton from "@/components/shared/FollowButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { fetchUser } from "@/lib/actions/user.actions";
@@ -24,6 +25,12 @@ async function Page({ params }: { params: { id: string } }) {
 
   if (!userInfo?.onboarded) redirect("/onboarding");
 
+  // Fetch the current user's info to get their MongoDB _id
+  const currentUserInfo = await fetchUser(user.id);
+
+  // Check if this is the current user's profile
+  const isOwnProfile = userInfo.id === user.id;
+
   return (
     <section>
       <ProfileHeader
@@ -33,7 +40,17 @@ async function Page({ params }: { params: { id: string } }) {
         username={userInfo.username}
         imgUrl={userInfo.image}
         bio={userInfo.bio}
-      />
+        followersCount={userInfo.followers?.length || 0}
+        followingCount={userInfo.following?.length || 0}
+      >
+        {/* Only show follow button if it's not the user's own profile */}
+        {!isOwnProfile && currentUserInfo && (
+          <FollowButton
+            followerId={currentUserInfo._id.toString()} // Current user's MongoDB ID
+            followingId={userInfo._id.toString()} // Profile user's MongoDB ID
+          />
+        )}
+      </ProfileHeader>
 
       <div className="mt-9">
         <Tabs defaultValue="posts" className="w-full">

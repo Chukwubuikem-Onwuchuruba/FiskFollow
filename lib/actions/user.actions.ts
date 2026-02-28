@@ -21,6 +21,16 @@ export async function fetchUser(userId: string) {
       .populate({
         path: "posts",
         model: Post,
+      })
+      .populate({
+        path: "followers",
+        model: User,
+        select: "id name username image",
+      })
+      .populate({
+        path: "following",
+        model: User,
+        select: "id name username image",
       });
   } catch (error: any) {
     throw new Error(`Failed to fetch user: ${error.message}`);
