@@ -24,6 +24,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "placehold.co",
       },
+      {
+        protocol: "https",
+        hostname: "*.ufs.sh",
+      },
     ],
     // Remove typescript from images object - this needs to be at root level
   },
