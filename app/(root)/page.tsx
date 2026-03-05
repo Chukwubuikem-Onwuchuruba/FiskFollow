@@ -19,6 +19,7 @@ async function Home({
   if (!user) redirect("/sign-in");
 
   const userInfo = await fetchUser(user.id);
+  const currentUserMongoId = userInfo._id.toString();
   if (!userInfo?.onboarded) redirect("/onboarding");
 
   const result = await fetchPosts(params.page ? +params.page : 1, 30);
@@ -44,6 +45,9 @@ async function Home({
                 createdAt={post.createdAt}
                 comments={post.children}
                 images={post.images}
+                currentUserMongoId={currentUserMongoId}
+                likes={post.likes?.map((id: any) => id.toString()) || []}
+                reposts={post.reposts?.map((id: any) => id.toString()) || []}
               />
             ))}
           </>

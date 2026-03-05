@@ -22,12 +22,15 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
   const post = await fetchPostById(id);
   if (!post) return null;
 
+  const currentUserMongoId = userInfo._id.toString();
+
   return (
     <section className="relative">
       <div>
         <PostCard
           id={post._id}
           currentUserId={user.id}
+          currentUserMongoId={currentUserMongoId}
           parentId={post.parentId}
           content={post.text}
           author={post.author}
@@ -35,6 +38,8 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
           createdAt={post.createdAt}
           comments={post.children}
           images={post.images}
+          likes={post.likes?.map((id: any) => id.toString()) || []}
+          reposts={post.reposts?.map((id: any) => id.toString()) || []}
         />
       </div>
 
@@ -52,6 +57,7 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
             key={childItem._id}
             id={childItem._id}
             currentUserId={user.id}
+            currentUserMongoId={currentUserMongoId}
             parentId={childItem.parentId}
             content={childItem.text}
             author={childItem.author}
@@ -59,6 +65,8 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
             createdAt={childItem.createdAt}
             comments={childItem.children}
             images={childItem.images}
+            likes={childItem.likes?.map((id: any) => id.toString()) || []}
+            reposts={childItem.reposts?.map((id: any) => id.toString()) || []}
             isComment
           />
         ))}

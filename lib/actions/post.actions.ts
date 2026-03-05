@@ -252,3 +252,53 @@ export async function addCommentToPost({
     throw new Error("Unable to add comment");
   }
 }
+
+export async function likePost(postId: string, userId: string, path: string) {
+  try {
+    connectToDB();
+    await Post.findByIdAndUpdate(postId, { $addToSet: { likes: userId } });
+    await User.findByIdAndUpdate(userId, { $addToSet: { likedPosts: postId } });
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to like post: ${error.message}`);
+  }
+}
+
+export async function unlikePost(postId: string, userId: string, path: string) {
+  try {
+    connectToDB();
+    await Post.findByIdAndUpdate(postId, { $pull: { likes: userId } });
+    await User.findByIdAndUpdate(userId, { $pull: { likedPosts: postId } });
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to unlike post: ${error.message}`);
+  }
+}
+
+export async function repostPost(postId: string, userId: string, path: string) {
+  try {
+    connectToDB();
+    await Post.findByIdAndUpdate(postId, { $addToSet: { reposts: userId } });
+    await User.findByIdAndUpdate(userId, {
+      $addToSet: { repostedPosts: postId },
+    });
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to repost: ${error.message}`);
+  }
+}
+
+export async function unrepostPost(
+  postId: string,
+  userId: string,
+  path: string,
+) {
+  try {
+    connectToDB();
+    await Post.findByIdAndUpdate(postId, { $pull: { reposts: userId } });
+    await User.findByIdAndUpdate(userId, { $pull: { repostedPosts: postId } });
+    revalidatePath(path);
+  } catch (error: any) {
+    throw new Error(`Failed to unrepost: ${error.message}`);
+  }
+}

@@ -84,51 +84,58 @@ export async function fetchUserPosts(userId: string) {
   try {
     connectToDB();
 
-    // Find all posts authored by the user with the given userId
-    const user = await User.findOne({ id: userId }).populate({
-      path: "posts",
-      model: Post,
-      populate: [
-        {
-          path: "community",
-          model: Community,
-          select: "name id image _id",
-        },
-        {
-          path: "children",
-          model: Post,
-          populate: {
-            path: "author",
-            model: User,
-            select: "name image id",
+    const user = await User.findOne({ id: userId })
+      .populate({
+        path: "posts",
+        model: Post,
+        populate: [
+          { path: "community", model: Community, select: "name id image _id" },
+          {
+            path: "children",
+            model: Post,
+            populate: { path: "author", model: User, select: "name image id" },
           },
-        },
-      ],
-    });
+        ],
+      })
+      .populate({
+        path: "repostedPosts",
+        model: Post,
+        populate: [
+          { path: "author", model: User, select: "name image id" },
+          { path: "community", model: Community, select: "name id image _id" },
+          {
+            path: "children",
+            model: Post,
+            populate: { path: "author", model: User, select: "name image id" },
+          },
+        ],
+      });
 
-    if (!user) {
-      return {
-        name: "",
-        image: "",
-        id: "",
-        posts: [],
-      };
-    }
+    if (!user) return { name: "", image: "", id: "", posts: [] };
 
-    return {
-      name: user.name,
-      image: user.image,
-      id: user.id,
-      posts: user.posts || [],
-    };
+    const ownPosts = (user.posts || []).map((p: any) => ({
+      ...p.toObject(),
+      isRepost: false,
+    }));
+
+    const ownPostIds = new Set(ownPosts.map((p: any) => p._id.toString()));
+
+    const reposted = (user.repostedPosts || [])
+      .filter((p: any) => !ownPostIds.has(p._id.toString())) // exclude own posts
+      .map((p: any) => ({
+        ...p.toObject(),
+        isRepost: true,
+      }));
+
+    const allPosts = [...ownPosts, ...reposted].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
+    return { name: user.name, image: user.image, id: user.id, posts: allPosts };
   } catch (error) {
     console.error("Error fetching user posts:", error);
-    return {
-      name: "",
-      image: "",
-      id: userId,
-      posts: [],
-    };
+    return { name: "", image: "", id: userId, posts: [] };
   }
 }
 
@@ -217,5 +224,59 @@ export async function getActivity(userId: string) {
   } catch (error) {
     console.error("Error fetching replies: ", error);
     throw error;
+  }
+}
+
+export async function fetchUserLikedPosts(userId: string) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ id: userId }).populate({
+      path: "likedPosts",
+      model: Post,
+      populate: [
+        { path: "author", model: User, select: "name image id" },
+        { path: "community", model: Community, select: "name id image _id" },
+        {
+          path: "children",
+          model: Post,
+          populate: { path: "author", model: User, select: "name image id" },
+        },
+      ],
+    });
+
+    return user?.likedPosts || [];
+  } catch (error) {
+    console.error("Error fetching liked posts:", error);
+    return [];
+  }
+}
+
+export async function fetchUserMediaPosts(userId: string) {
+  try {
+    connectToDB();
+
+    const user = await User.findOne({ id: userId }).populate({
+      path: "posts",
+      model: Post,
+      populate: [
+        { path: "author", model: User, select: "name image id" },
+        { path: "community", model: Community, select: "name id image _id" },
+        {
+          path: "children",
+          model: Post,
+          populate: { path: "author", model: User, select: "name image id" },
+        },
+      ],
+    });
+
+    if (!user) return [];
+
+    return (user.posts || []).filter(
+      (post: any) => post.images && post.images.length > 0,
+    );
+  } catch (error) {
+    console.error("Error fetching media posts:", error);
+    return [];
   }
 }

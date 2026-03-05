@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatDateString } from "@/lib/utils";
 import DeletePost from "../forms/DeletePost";
 import { Heart, MessageCircleMore, Repeat2 } from "lucide-react";
+import PostActions from "./PostActions";
 
 interface Props {
   id: string;
@@ -28,6 +29,10 @@ interface Props {
   }[];
   isComment?: boolean;
   images?: string[];
+  likes?: string[];
+  reposts?: string[];
+  currentUserMongoId?: string;
+  isRepost?: boolean;
 }
 
 function PostCard({
@@ -41,6 +46,10 @@ function PostCard({
   comments,
   isComment,
   images = [],
+  likes = [],
+  reposts = [],
+  currentUserMongoId = "",
+  isRepost = false,
 }: Props) {
   return (
     <article
@@ -48,6 +57,11 @@ function PostCard({
         isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
       }`}
     >
+      {isRepost && (
+        <p className="text-subtle-medium text-gray-1 mb-2 ml-1 flex items-center gap-1">
+          <Repeat2 className="w-3 h-3" /> You reposted
+        </p>
+      )}
       <div className="flex items-start justify-between">
         <div className="flex w-full flex-1 flex-row gap-4">
           <div className="flex flex-col items-center">
@@ -87,14 +101,17 @@ function PostCard({
             )}
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
-              <div className="flex gap-3.5">
-                <Heart className="w-6 h-6 text-light-2 hover:text-red-500 cursor-pointer transition" />
-
+              <div className="flex gap-3.5 items-center">
+                <PostActions
+                  postId={id}
+                  currentUserId={currentUserId}
+                  initialLikes={likes}
+                  initialReposts={reposts}
+                  currentUserMongoId={currentUserMongoId}
+                />
                 <Link href={`/post/${id}`}>
                   <MessageCircleMore className="w-6 h-6 text-light-2 hover:text-primary-500 cursor-pointer transition" />
                 </Link>
-
-                <Repeat2 className="w-6 h-6 text-light-2 hover:text-green-500 cursor-pointer transition" />
               </div>
 
               {isComment && comments.length > 0 && (

@@ -49,6 +49,8 @@ const userSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
+  likedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
+  repostedPosts: [{ type: mongoose.Schema.Types.ObjectId, ref: "Post" }],
 });
 
 const User = mongoose.models.User || mongoose.model("User", userSchema);

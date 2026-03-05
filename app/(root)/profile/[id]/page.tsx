@@ -10,6 +10,8 @@ import FollowButton from "@/components/shared/FollowButton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { fetchUser } from "@/lib/actions/user.actions";
+import LikesTab from "@/components/shared/LikesTab";
+import MediaTab from "@/components/shared/MediaTab";
 
 async function Page({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -80,12 +82,19 @@ async function Page({ params }: { params: { id: string } }) {
               value={tab.value}
               className="w-full text-light-1"
             >
-              {/* @ts-ignore */}
-              <PostsTab
-                currentUserId={user.id}
-                accountId={userInfo.id}
-                accountType="User"
-              />
+              {tab.value === "posts" && (
+                <PostsTab
+                  currentUserId={user.id}
+                  accountId={userInfo.id}
+                  accountType="User"
+                />
+              )}
+              {tab.value === "media" && (
+                <MediaTab currentUserId={user.id} accountId={userInfo.id} />
+              )}
+              {tab.value === "likes" && (
+                <LikesTab currentUserId={user.id} accountId={userInfo.id} />
+              )}
             </TabsContent>
           ))}
         </Tabs>

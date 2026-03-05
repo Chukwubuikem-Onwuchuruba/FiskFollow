@@ -28,6 +28,8 @@ const postSchema = new mongoose.Schema({
     },
   ],
   images: [{ type: String }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+  reposts: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
 });
 
 const Post = mongoose.models.Post || mongoose.model("Post", postSchema);
