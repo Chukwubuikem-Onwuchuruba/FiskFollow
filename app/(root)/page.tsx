@@ -10,7 +10,7 @@ import { fetchUser } from "@/lib/actions/user.actions";
 async function Home({
   searchParams,
 }: {
-  searchParams: Promise<{ [key: string]: string | undefined }>; // Change type to Promise
+  searchParams: Promise<{ [key: string]: string | undefined }>;
 }) {
   // Await searchParams
   const params = await searchParams;
@@ -19,8 +19,9 @@ async function Home({
   if (!user) redirect("/sign-in");
 
   const userInfo = await fetchUser(user.id);
-  const currentUserMongoId = userInfo._id.toString();
   if (!userInfo?.onboarded) redirect("/onboarding");
+
+  const currentUserMongoId = userInfo._id.toString();
 
   const result = await fetchPosts(params.page ? +params.page : 1, 30);
 

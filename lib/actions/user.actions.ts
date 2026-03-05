@@ -202,27 +202,80 @@ export async function getActivity(userId: string) {
   try {
     connectToDB();
 
-    // Find all posts created by the user
     const userPosts = await Post.find({ author: userId });
+    const userPostIds = userPosts.map((p) => p._id);
 
-    // Collect all the child post ids (replies) from the 'children' field of each user post
-    const childPostIds = userPosts.reduce((acc, userPost) => {
+    // Replies: comments on user's posts by other people
+    const childPostIds = userPosts.reduce((acc: any[], userPost) => {
       return acc.concat(userPost.children);
     }, []);
 
-    // Find and return the child posts (replies) excluding the ones created by the same user
     const replies = await Post.find({
       _id: { $in: childPostIds },
-      author: { $ne: userId }, // Exclude posts authored by the same user
-    }).populate({
-      path: "author",
-      model: User,
-      select: "name image _id",
-    });
+      author: { $ne: userId },
+    }).populate({ path: "author", model: User, select: "name image _id id" });
 
-    return replies;
+    const replyActivities = replies.map((r) => ({
+      _id: r._id.toString(),
+      type: "reply" as const,
+      author: r.author,
+      postId: r.parentId,
+      createdAt: r.createdAt,
+    }));
+
+    // Likes: other users who liked any of the user's posts
+    const likedPosts = await Post.find({
+      _id: { $in: userPostIds },
+      likes: { $exists: true, $ne: [] },
+    }).populate({ path: "likes", model: User, select: "name image _id id" });
+
+    const likeActivities: any[] = [];
+    for (const post of likedPosts) {
+      for (const liker of post.likes) {
+        if (liker._id.toString() === userId.toString()) continue;
+        likeActivities.push({
+          _id: `like-${post._id}-${liker._id}`,
+          type: "like" as const,
+          author: liker,
+          postId: post._id.toString(),
+          createdAt: post.createdAt,
+        });
+      }
+    }
+
+    // Reposts: other users who reposted any of the user's posts
+    const repostedPosts = await Post.find({
+      _id: { $in: userPostIds },
+      reposts: { $exists: true, $ne: [] },
+    }).populate({ path: "reposts", model: User, select: "name image _id id" });
+
+    const repostActivities: any[] = [];
+    for (const post of repostedPosts) {
+      for (const reposter of post.reposts) {
+        if (reposter._id.toString() === userId.toString()) continue;
+        repostActivities.push({
+          _id: `repost-${post._id}-${reposter._id}`,
+          type: "repost" as const,
+          author: reposter,
+          postId: post._id.toString(),
+          createdAt: post.createdAt,
+        });
+      }
+    }
+
+    // Merge and sort by most recent
+    const allActivity = [
+      ...replyActivities,
+      ...likeActivities,
+      ...repostActivities,
+    ].sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+    );
+
+    return allActivity;
   } catch (error) {
-    console.error("Error fetching replies: ", error);
+    console.error("Error fetching activity: ", error);
     throw error;
   }
 }
