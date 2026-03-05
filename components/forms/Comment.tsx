@@ -128,9 +128,10 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
         className="comment-form flex flex-col gap-4"
         onSubmit={form.handleSubmit(onSubmit)}
       >
+        {/* Avatar + Text input */}
         <FormField
           control={form.control}
-          name="images"
+          name="post"
           render={({ field }) => (
             <FormItem className="flex w-full gap-3">
               <FormLabel>
@@ -145,70 +146,76 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
 
               <div className="flex flex-col w-full gap-3">
                 <FormControl>
-                  <>
-                    {/* Textarea + Icon Wrapper */}
-                    <div className="relative w-full">
-                      <Textarea
-                        {...field}
-                        placeholder="Comment..."
-                        className="pr-12 min-h-25 resize-none no-focus text-light-1 outline-none"
-                        disabled={isSubmitting}
-                      />
-
-                      {/* Attachment Icon */}
-                      <button
-                        type="button"
-                        onClick={triggerFileInput}
-                        className="absolute right-3 bottom-3 text-light-2 hover:text-primary-500 transition"
-                        disabled={isSubmitting}
-                      >
-                        <Paperclip size={18} />
-                      </button>
-
-                      {/* Hidden File Input */}
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        accept="image/*"
-                        multiple
-                        className="hidden"
-                        onChange={(e) => handleImage(e, field.onChange)}
-                      />
-                    </div>
-
-                    {imagePreviews.length > 0 && (
-                      <div className="grid grid-cols-4 gap-2 mt-3">
-                        {imagePreviews.map((preview, index) => (
-                          <div key={index} className="relative group">
-                            <Image
-                              src={preview}
-                              alt={`Preview ${index + 1}`}
-                              width={100}
-                              height={100}
-                              className="rounded-lg object-cover w-full h-24"
-                            />
-                            <button
-                              type="button"
-                              onClick={() => removeImage(index)}
-                              className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                              disabled={isSubmitting}
-                            >
-                              <X size={14} className="text-white" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </>
+                  <div className="relative w-full">
+                    <Textarea
+                      {...field}
+                      placeholder="Comment..."
+                      className="pr-12 min-h-25 resize-none no-focus text-light-1 outline-none"
+                      disabled={isSubmitting}
+                    />
+                    <button
+                      type="button"
+                      onClick={triggerFileInput}
+                      className="absolute right-3 bottom-3 text-light-2 hover:text-primary-500 transition"
+                      disabled={isSubmitting}
+                    >
+                      <Paperclip size={18} />
+                    </button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={(e) => handleImage(e, () => {})}
+                    />
+                  </div>
                 </FormControl>
               </div>
             </FormItem>
           )}
         />
 
+        {/* Image previews */}
+        <FormField
+          control={form.control}
+          name="images"
+          render={({ field }) => (
+            <FormItem>
+              <FormControl>
+                <>
+                  {imagePreviews.length > 0 && (
+                    <div className="grid grid-cols-4 gap-2 ml-[60px]">
+                      {imagePreviews.map((preview, index) => (
+                        <div key={index} className="relative group">
+                          <Image
+                            src={preview}
+                            alt={`Preview ${index + 1}`}
+                            width={100}
+                            height={100}
+                            className="rounded-lg object-cover w-full h-24"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            disabled={isSubmitting}
+                          >
+                            <X size={14} className="text-white" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
         <Button
           type="submit"
-          className="comment-form_btn"
+          className="comment-form_btn cursor-pointer"
           disabled={isSubmitting}
         >
           {isSubmitting ? "Replying..." : "Reply"}
