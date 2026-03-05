@@ -1,5 +1,3 @@
-import { redirect } from "next/navigation";
-
 import { fetchCommunityPosts } from "@/lib/actions/community.actions";
 import { fetchUserPosts } from "@/lib/actions/user.actions";
 
@@ -29,6 +27,7 @@ interface Result {
         image: string;
       };
     }[];
+    images?: string[];
   }[];
 }
 
@@ -52,9 +51,8 @@ async function PostsTab({ currentUserId, accountId, accountType }: Props) {
     return <div className="text-light-1">Error loading posts</div>;
   }
 
-  // Check if result exists and has posts array
   if (!result || !result.posts) {
-    return <p className="no-result">No posts found</p>; // Return message instead of redirect
+    return <p className="no-result">No posts found</p>;
   }
 
   return (
@@ -85,6 +83,7 @@ async function PostsTab({ currentUserId, accountId, accountType }: Props) {
             }
             createdAt={post.createdAt}
             comments={post.children}
+            images={post.images || []}
           />
         ))
       )}
