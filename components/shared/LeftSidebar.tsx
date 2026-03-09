@@ -8,28 +8,26 @@ import { useState, useEffect } from "react";
 
 import { sidebarLinks } from "@/constants";
 
-const LeftSidebar = () => {
+interface Props {
+  unreadCount?: number;
+}
+
+const LeftSidebar = ({ unreadCount = 0 }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isDesktop, setIsDesktop] = useState(false);
-
   const { userId, isLoaded } = useAuth();
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsDesktop(window.innerWidth >= 768); // md breakpoint
+      setIsDesktop(window.innerWidth >= 768);
     };
-
     checkScreenSize();
     window.addEventListener("resize", checkScreenSize);
-
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
 
-  // Don't render until auth is loaded
   if (!isLoaded) return null;
-
-  // Don't render on mobile
   if (!isDesktop) return null;
 
   return (
@@ -40,29 +38,28 @@ const LeftSidebar = () => {
             (pathname.includes(link.route) && link.route.length > 1) ||
             pathname === link.route;
 
-          // Handle profile route
           let href = link.route;
           if (link.route === "/profile") {
-            if (userId) {
-              href = `/profile/${userId}`;
-            } else {
-              href = "/sign-in"; // Redirect to sign-in if no user
-            }
+            href = userId ? `/profile/${userId}` : "/sign-in";
           }
 
           return (
             <Link
               href={href}
               key={link.label}
-              className={`leftsidebar_link ${isActive && "bg-primary-500 "}`}
+              className={`leftsidebar_link ${isActive && "bg-primary-500"}`}
             >
-              <Image
-                src={link.imgURL}
-                alt={link.label}
-                width={24}
-                height={24}
-              />
-
+              <div className="relative">
+                <Image
+                  src={link.imgURL}
+                  alt={link.label}
+                  width={24}
+                  height={24}
+                />
+                {link.label === "Messages" && unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full" />
+                )}
+              </div>
               <p className="text-light-1 max-lg:hidden">{link.label}</p>
             </Link>
           );
@@ -79,7 +76,6 @@ const LeftSidebar = () => {
                 width={24}
                 height={24}
               />
-
               <p className="text-light-2 max-lg:hidden">Logout</p>
             </div>
           </SignOutButton>

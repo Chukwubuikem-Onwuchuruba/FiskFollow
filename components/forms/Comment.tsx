@@ -185,7 +185,7 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
               <FormControl>
                 <>
                   {imagePreviews.length > 0 && (
-                    <div className="grid grid-cols-4 gap-2 ml-[60px]">
+                    <div className="grid grid-cols-4 gap-2 ml-15">
                       {imagePreviews.map((preview, index) => (
                         <div key={index} className="relative group">
                           <Image
