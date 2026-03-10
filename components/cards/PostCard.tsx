@@ -5,6 +5,7 @@ import { formatDateString } from "@/lib/utils";
 import DeletePost from "../forms/DeletePost";
 import { Heart, MessageCircleMore, Repeat2 } from "lucide-react";
 import PostActions from "./PostActions";
+import PostImages from "./PostImages";
 
 interface Props {
   id: string;
@@ -85,20 +86,7 @@ function PostCard({
             </Link>
             <p className="mt-2 text-small-regular text-light-2">{content}</p>
 
-            {images && images.length > 0 && (
-              <div className="grid grid-cols-2 gap-2 mt-3">
-                {images.map((image: string, index: number) => (
-                  <div key={index} className="relative aspect-square">
-                    <Image
-                      src={image}
-                      alt={`Post image ${index + 1}`}
-                      fill
-                      className="rounded-lg object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
+            {images && images.length > 0 && <PostImages images={images} />}
 
             <div className={`${isComment && "mb-10"} mt-5 flex flex-col gap-3`}>
               <div className="flex gap-3.5 items-center">
