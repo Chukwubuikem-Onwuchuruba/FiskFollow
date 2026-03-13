@@ -217,12 +217,12 @@ export default function ChatWindow({
   return (
     <div className="flex flex-1 flex-col h-full overflow-hidden">
       {/* Header */}
-      <div className="flex items-center gap-3 p-4 border-b border-dark-4 flex-shrink-0">
+      <div className="flex items-center gap-3 p-4 border-b border-dark-4 shrink-0">
         <Link
           href={conversation.isGroup ? "#" : `/profile/${otherParticipant?.id}`}
           className={`flex items-center gap-3 ${!conversation.isGroup && "hover:opacity-80 transition cursor-pointer"}`}
         >
-          <div className="relative h-10 w-10 flex-shrink-0">
+          <div className="relative h-10 w-10 shrink-0">
             {headerImage ? (
               <Image
                 src={headerImage}
@@ -260,7 +260,7 @@ export default function ChatWindow({
                 className={`flex items-end gap-2 group ${isOwn ? "flex-row-reverse" : "flex-row"}`}
               >
                 {!isOwn && (
-                  <div className="relative h-7 w-7 flex-shrink-0">
+                  <div className="relative h-7 w-7 shrink-0">
                     <Image
                       src={message.sender.image}
                       alt={message.sender.name}
@@ -369,8 +369,8 @@ export default function ChatWindow({
       )}
 
       {/* Input */}
-      <div className="p-4 border-t border-dark-4 flex items-center gap-3 flex-shrink-0">
-        <div className="relative h-8 w-8 flex-shrink-0">
+      <div className="p-4 border-t border-dark-4 flex items-center gap-3 shrink-0">
+        <div className="relative h-8 w-8 shrink-0">
           <Image
             src={currentUserImage}
             alt={currentUserName}
@@ -392,7 +392,7 @@ export default function ChatWindow({
             <button
               type="button"
               onClick={() => fileInputRef.current?.click()}
-              className="text-light-3 hover:text-primary-500 transition cursor-pointer flex-shrink-0"
+              className="text-light-3 hover:text-primary-500 transition cursor-pointer shrink-0"
               disabled={isSending}
             >
               <Paperclip className="w-4 h-4" />

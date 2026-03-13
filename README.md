@@ -28,7 +28,7 @@ The application is built using the **MERN stack**, following modern full-stack w
 - **Database**: MongoDB for storing users, posts, and comments.
 - **Real-Time Communication**: Socket.io.
 - **Authentication**: Using Clerk.
-- **Tools**: Git, GitHub, and VS Code.
+- **Tools**: Git, GitHub, GitHub Copilot, VS Code, and ChatGPT for debugging.
 
 ---
 
