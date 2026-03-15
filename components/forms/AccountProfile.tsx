@@ -32,6 +32,7 @@ import { isBase64Image } from "@/lib/utils";
 import { UserValidation } from "@/lib/validations/user";
 import { updateUser } from "@/lib/actions/user.actions";
 import type { UserValidationType } from "@/lib/validations/user";
+import EmojiPicker from "../shared/EmojiPicker";
 
 interface Props {
   user: {
@@ -211,12 +212,23 @@ const AccountProfile = ({ user, btnTitle }: Props) => {
                 Bio
               </FormLabel>
               <FormControl>
-                <Textarea
-                  rows={10}
-                  className="account-form_input no-focus"
-                  {...field}
-                  placeholder="What should fellow Fiskites know about you?"
-                />
+                <div className="relative w-full">
+                  <Textarea
+                    rows={10}
+                    className="account-form_input no-focus pr-10"
+                    {...field}
+                    placeholder="What should fellow Fiskites know about you?"
+                  />
+                  <div className="absolute right-3 bottom-3">
+                    <EmojiPicker
+                      onEmojiSelect={(emoji) => {
+                        const current = form.getValues("bio");
+                        form.setValue("bio", current + emoji);
+                      }}
+                      position="top"
+                    />
+                  </div>
+                </div>
               </FormControl>
               <FormMessage />
             </FormItem>

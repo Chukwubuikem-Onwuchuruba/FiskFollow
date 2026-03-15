@@ -9,6 +9,7 @@ interface Props {
   username: string;
   imgUrl: string;
   bio: string;
+  classification?: string;
   followersCount?: number;
   followingCount?: number;
   type?: string;
@@ -22,6 +23,7 @@ function ProfileHeader({
   username,
   imgUrl,
   bio,
+  classification,
   followersCount = 0,
   followingCount = 0,
   type,
@@ -45,8 +47,12 @@ function ProfileHeader({
               {name}
             </h2>
             <p className="text-base-medium text-gray-1">@{username}</p>
+            {classification && (
+              <p className="text-subtle-medium text-primary-500 mt-0.5">
+                {classification}
+              </p>
+            )}
 
-            {/* Followers & Following Stats */}
             <div className="flex gap-8 mt-2">
               <div className="flex flex-col items-center">
                 <span className="text-light-1 text-small-semibold">
@@ -68,7 +74,6 @@ function ProfileHeader({
           </div>
         </div>
 
-        {/* Render children (follow button) OR edit button */}
         {children ? (
           <div>{children}</div>
         ) : (
@@ -78,7 +83,7 @@ function ProfileHeader({
               <div className="flex cursor-pointer gap-3 rounded-lg bg-dark-3 px-4 py-2">
                 <Image
                   src="/assets/edit.svg"
-                  alt="logout"
+                  alt="edit"
                   width={16}
                   height={16}
                 />
@@ -90,7 +95,6 @@ function ProfileHeader({
       </div>
 
       <p className="mt-6 max-w-lg text-base-regular text-light-2">{bio}</p>
-
       <div className="mt-12 h-0.5 w-full bg-dark-3" />
     </div>
   );

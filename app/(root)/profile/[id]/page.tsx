@@ -42,6 +42,7 @@ async function Page({ params }: { params: { id: string } }) {
         username={userInfo.username}
         imgUrl={userInfo.image}
         bio={userInfo.bio}
+        classification={userInfo.classification}
         followersCount={userInfo.followers?.length || 0}
         followingCount={userInfo.following?.length || 0}
       >
