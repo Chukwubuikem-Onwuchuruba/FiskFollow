@@ -1,11 +1,13 @@
 import { redirect } from "next/navigation";
 import { currentUser } from "@clerk/nextjs/server";
+import Link from "next/link";
 
 import Comment from "@/components/forms/Comment";
 import PostCard from "@/components/cards/PostCard";
 
 import { fetchUser } from "@/lib/actions/user.actions";
 import { fetchPostById } from "@/lib/actions/post.actions";
+import { MoveLeft } from "lucide-react";
 
 export const revalidate = 0;
 
@@ -24,14 +26,49 @@ async function page({ params }: { params: Promise<{ id: string }> }) {
 
   const currentUserMongoId = userInfo._id.toString();
 
+  // Check if this post has a parent
+  const parentPost =
+    post.parentId && typeof post.parentId === "object" ? post.parentId : null;
+
   return (
     <section className="relative">
+      {/* Show parent post if this is a reply */}
+      {parentPost && (
+        <div className="mb-4">
+          <Link
+            href={`/post/${parentPost._id}`}
+            className="text-gray-1 hover:text-light-1 transition mb-2 flex items-center w-fit"
+          >
+            <MoveLeft className="w-5 h-5" />
+          </Link>
+          <PostCard
+            id={parentPost._id.toString()}
+            currentUserId={user.id}
+            currentUserMongoId={currentUserMongoId}
+            parentId={parentPost.parentId || null}
+            content={parentPost.text}
+            author={parentPost.author}
+            community={parentPost.community || null}
+            createdAt={parentPost.createdAt}
+            comments={[]}
+            images={parentPost.images || []}
+            likes={parentPost.likes?.map((id: any) => id.toString()) || []}
+            reposts={parentPost.reposts?.map((id: any) => id.toString()) || []}
+          />
+          <div className="mt-2 mb-4 h-0.5 w-full bg-dark-3" />
+        </div>
+      )}
+
       <div>
         <PostCard
           id={post._id}
           currentUserId={user.id}
           currentUserMongoId={currentUserMongoId}
-          parentId={post.parentId}
+          parentId={
+            typeof post.parentId === "string"
+              ? post.parentId
+              : post.parentId?._id?.toString() || null
+          }
           content={post.text}
           author={post.author}
           community={post.community}

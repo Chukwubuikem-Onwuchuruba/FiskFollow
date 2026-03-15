@@ -178,25 +178,34 @@ export async function fetchPostById(postId: string) {
         path: "author",
         model: User,
         select: "_id id name image",
-      }) // Populate the author field with _id and username
+      })
       .populate({
         path: "community",
         model: Community,
         select: "_id id name image",
-      }) // Populate the community field with _id and name
+      })
       .populate({
-        path: "children", // Populate the children field
+        path: "parentId",
+        model: Post,
+        populate: {
+          path: "author",
+          model: User,
+          select: "_id id name image",
+        },
+      })
+      .populate({
+        path: "children",
         populate: [
           {
-            path: "author", // Populate the author field within children
+            path: "author",
             model: User,
-            select: "_id id name parentId image", // Select only _id and username fields of the author
+            select: "_id id name parentId image",
           },
           {
-            path: "children", // Populate the children field within children
-            model: Post, // The model of the nested children (assuming it's the same "Post" model)
+            path: "children",
+            model: Post,
             populate: {
-              path: "author", // Populate the author field within nested children
+              path: "author",
               model: User,
               select: "_id id name parentId image",
             },
