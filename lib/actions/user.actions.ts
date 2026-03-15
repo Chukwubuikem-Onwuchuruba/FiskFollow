@@ -139,35 +139,32 @@ export async function fetchUserPosts(userId: string) {
   }
 }
 
-// Almost similar to Post (search + pagination) and Community (search + pagination)
 export async function fetchUsers({
   userId,
   searchString = "",
   pageNumber = 1,
   pageSize = 20,
   sortBy = "desc",
+  excludeIds = [],
 }: {
   userId: string;
   searchString?: string;
   pageNumber?: number;
   pageSize?: number;
   sortBy?: SortOrder;
+  excludeIds?: string[];
 }) {
   try {
     connectToDB();
 
-    // Calculate the number of users to skip based on the page number and page size.
     const skipAmount = (pageNumber - 1) * pageSize;
-
-    // Create a case-insensitive regular expression for the provided search string.
     const regex = new RegExp(searchString, "i");
 
-    // Create an initial query object to filter users.
     const query: QueryFilter<typeof User> = {
-      id: { $ne: userId }, // Exclude the current user from the results.
+      id: { $ne: userId },
+      ...(excludeIds.length > 0 && { _id: { $nin: excludeIds } }),
     };
 
-    // If the search string is not empty, add the $or operator to match either username or name fields.
     if (searchString.trim() !== "") {
       query.$or = [
         { username: { $regex: regex } },
@@ -175,20 +172,14 @@ export async function fetchUsers({
       ];
     }
 
-    // Define the sort options for the fetched users based on createdAt field and provided sort order.
     const sortOptions = { createdAt: sortBy };
-
     const usersQuery = User.find(query)
       .sort(sortOptions)
       .skip(skipAmount)
       .limit(pageSize);
 
-    // Count the total number of users that match the search criteria (without pagination).
     const totalUsersCount = await User.countDocuments(query);
-
     const users = await usersQuery.exec();
-
-    // Check if there are more users beyond the current page.
     const isNext = totalUsersCount > skipAmount + users.length;
 
     return { users, isNext };
