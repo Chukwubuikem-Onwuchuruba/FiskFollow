@@ -46,7 +46,7 @@ async function RightSidebar() {
       </div>
 
       <div className="flex flex-1 flex-col justify-start">
-        <h3 className="text-heading4-medium text-light-1">Similar Minds</h3>
+        <h3 className="text-heading4-medium text-light-1">Suggested People</h3>
         <div className="mt-7 flex w-87.5 flex-col gap-10">
           {similarMinds.users.length > 0 ? (
             <>
@@ -62,7 +62,9 @@ async function RightSidebar() {
               ))}
             </>
           ) : (
-            <p className="text-base-regular! text-light-3">No users yet</p>
+            <p className="text-base-regular! text-light-3">
+              Keep an eye out for new people!
+            </p>
           )}
         </div>
       </div>

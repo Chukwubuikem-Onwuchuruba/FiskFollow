@@ -124,16 +124,23 @@ function PostCard({
 
       {!isComment && comments.length > 0 && (
         <div className="ml-1 mt-3 flex items-center gap-2">
-          {comments.slice(0, 2).map((comment, index) => (
-            <Image
-              key={index}
-              src={comment.author.image}
-              alt={`user_${index}`}
-              width={24}
-              height={24}
-              className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
-            />
-          ))}
+          {comments
+            .filter(
+              (comment, index, self) =>
+                index ===
+                self.findIndex((c) => c.author.image === comment.author.image),
+            )
+            .slice(0, 2)
+            .map((comment, index) => (
+              <Image
+                key={index}
+                src={comment.author.image}
+                alt={`user_${index}`}
+                width={24}
+                height={24}
+                className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
+              />
+            ))}
 
           <Link href={`/post/${id}`}>
             <p className="mt-1 text-subtle-medium text-gray-1">
