@@ -22,6 +22,7 @@ import { CommentValidation } from "@/lib/validations/post";
 import { addCommentToPost } from "@/lib/actions/post.actions";
 import { useUploadThing } from "@/lib/uploadthing";
 import { Textarea } from "../ui/textarea";
+import EmojiPicker from "../shared/EmojiPicker";
 
 interface Props {
   postId: string;
@@ -153,14 +154,23 @@ function Comment({ postId, currentUserImg, currentUserId }: Props) {
                       className="pr-12 min-h-25 resize-none no-focus text-light-1 outline-none"
                       disabled={isSubmitting}
                     />
-                    <button
-                      type="button"
-                      onClick={triggerFileInput}
-                      className="absolute right-3 bottom-3 text-light-2 hover:text-primary-500 transition"
-                      disabled={isSubmitting}
-                    >
-                      <Paperclip size={18} />
-                    </button>
+                    <div className="absolute right-3 bottom-3 flex items-center gap-2">
+                      <EmojiPicker
+                        onEmojiSelect={(emoji) => {
+                          const current = form.getValues("post");
+                          form.setValue("post", current + emoji);
+                        }}
+                        position="top"
+                      />
+                      <button
+                        type="button"
+                        onClick={triggerFileInput}
+                        className="text-light-2 hover:text-primary-500 transition"
+                        disabled={isSubmitting}
+                      >
+                        <Paperclip size={18} />
+                      </button>
+                    </div>
                     <input
                       ref={fileInputRef}
                       type="file"

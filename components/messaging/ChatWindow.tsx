@@ -20,6 +20,7 @@ import {
 import { getSocket } from "@/lib/socket";
 import { useUploadThing } from "@/lib/uploadthing";
 import Link from "next/link";
+import EmojiPicker from "../shared/EmojiPicker";
 
 interface Props {
   conversation: any;
@@ -387,6 +388,9 @@ export default function ChatWindow({
             rows={1}
             className="flex-1 bg-transparent text-light-1 text-small-regular outline-none resize-none placeholder:text-gray-1"
             disabled={isSending}
+          />
+          <EmojiPicker
+            onEmojiSelect={(emoji) => setText((prev) => prev + emoji)}
           />
           {files.length < 4 && (
             <button

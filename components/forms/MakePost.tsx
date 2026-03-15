@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { PostValidation } from "@/lib/validations/post";
 import { createPost } from "@/lib/actions/post.actions";
 import { useUploadThing } from "@/lib/uploadthing";
+import EmojiPicker from "../shared/EmojiPicker";
 
 interface Props {
   userId: string;
@@ -138,19 +139,28 @@ function MakePost({ userId }: Props) {
                       placeholder="What's on your mind?"
                       className="pr-12 min-h-35 resize-none no-focus border border-dark-4 bg-dark-3 text-light-1 outline-none"
                     />
-
-                    {/* Attachment Icon */}
-                    {files.length < 4 && (
-                      <button
-                        type="button"
-                        onClick={() =>
-                          document.getElementById("post-image-upload")?.click()
-                        }
-                        className="absolute right-3 bottom-3 text-light-2 hover:text-primary-500 transition"
-                      >
-                        <Paperclip size={18} />
-                      </button>
-                    )}
+                    <div className="absolute right-3 bottom-3 flex items-center gap-2">
+                      <EmojiPicker
+                        onEmojiSelect={(emoji) => {
+                          const current = form.getValues("post");
+                          form.setValue("post", current + emoji);
+                        }}
+                        position="top"
+                      />
+                      {files.length < 4 && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            document
+                              .getElementById("post-image-upload")
+                              ?.click()
+                          }
+                          className="text-light-2 hover:text-primary-500 transition"
+                        >
+                          <Paperclip size={18} />
+                        </button>
+                      )}
+                    </div>
 
                     {/* Hidden File Input */}
                     <input
