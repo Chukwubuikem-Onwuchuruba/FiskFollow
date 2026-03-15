@@ -82,6 +82,7 @@ export default function ChatWindow({
       conversationId: conversation._id,
       userMongoId: currentUserMongoId,
     });
+    socket.emit("notification:messagesRead");
 
     socket.on("message:receive", (message: any) => {
       setMessages((prev) => [...prev, message]);

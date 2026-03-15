@@ -64,6 +64,18 @@ io.on("connection", (socket) => {
       activeUsers.delete(socket.data.userMongoId);
     }
   });
+
+  socket.on("message:send", (message: any) => {
+    // Broadcast message to conversation room
+    socket.to(message.conversation).emit("message:receive", message);
+
+    // Notify all participants about unread count change
+    socket.to(message.conversation).emit("notification:newMessage");
+  });
+
+  socket.on("notification:messagesRead", () => {
+    socket.emit("notification:messagesRead");
+  });
 });
 
 console.log("> Socket.io server ready on port 3001");

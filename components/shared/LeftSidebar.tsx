@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { SignOutButton, SignedIn, useAuth } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
+import { getSocket } from "@/lib/socket";
 
 import { sidebarLinks } from "@/constants";
 
@@ -16,7 +17,12 @@ const LeftSidebar = ({ unreadCount = 0 }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isDesktop, setIsDesktop] = useState(false);
+  const [localUnreadCount, setLocalUnreadCount] = useState(unreadCount);
   const { userId, isLoaded } = useAuth();
+
+  useEffect(() => {
+    setLocalUnreadCount(unreadCount);
+  }, [unreadCount]);
 
   useEffect(() => {
     const checkScreenSize = () => {
@@ -26,6 +32,27 @@ const LeftSidebar = ({ unreadCount = 0 }: Props) => {
     window.addEventListener("resize", checkScreenSize);
     return () => window.removeEventListener("resize", checkScreenSize);
   }, []);
+
+  useEffect(() => {
+    if (!userId) return;
+
+    const socket = getSocket();
+
+    // Show dot instantly when a new message arrives
+    socket.on("notification:newMessage", () => {
+      setLocalUnreadCount((prev) => prev + 1);
+    });
+
+    // When messages are read, reset to server value
+    socket.on("notification:messagesRead", () => {
+      setLocalUnreadCount(0);
+    });
+
+    return () => {
+      socket.off("notification:newMessage");
+      socket.off("notification:messagesRead");
+    };
+  }, [userId]);
 
   if (!isLoaded) return null;
   if (!isDesktop) return null;
@@ -56,7 +83,7 @@ const LeftSidebar = ({ unreadCount = 0 }: Props) => {
                   width={24}
                   height={24}
                 />
-                {link.label === "Messages" && unreadCount > 0 && (
+                {link.label === "Messages" && localUnreadCount > 0 && (
                   <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full" />
                 )}
               </div>
