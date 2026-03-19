@@ -76,6 +76,14 @@ io.on("connection", (socket) => {
   socket.on("notification:messagesRead", () => {
     socket.emit("notification:messagesRead");
   });
+
+  socket.on("post:liked", (data: { postId: string; likes: string[] }) => {
+    io.emit("post:likesUpdated", data);
+  });
+
+  socket.on("post:reposted", (data: { postId: string; reposts: string[] }) => {
+    io.emit("post:repostsUpdated", data);
+  });
 });
 
 console.log("> Socket.io server ready on port 3001");

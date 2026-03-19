@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import { Heart, Repeat2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import {
@@ -9,6 +9,7 @@ import {
   repostPost,
   unrepostPost,
 } from "@/lib/actions/post.actions";
+import { getSocket } from "@/lib/socket";
 
 interface Props {
   postId: string;
@@ -34,27 +35,71 @@ export default function PostActions({
   const isLiked = likes.includes(currentUserMongoId);
   const isReposted = reposts.includes(currentUserMongoId);
 
+  // Listen for real-time updates from other users
+  useEffect(() => {
+    const socket = getSocket();
+
+    socket.on(
+      "post:likesUpdated",
+      (data: { postId: string; likes: string[] }) => {
+        if (data.postId === postId) {
+          setLikes(data.likes);
+        }
+      },
+    );
+
+    socket.on(
+      "post:repostsUpdated",
+      (data: { postId: string; reposts: string[] }) => {
+        if (data.postId === postId) {
+          setReposts(data.reposts);
+        }
+      },
+    );
+
+    return () => {
+      socket.off("post:likesUpdated");
+      socket.off("post:repostsUpdated");
+    };
+  }, [postId]);
+
   const handleLike = () => {
     startLikeTransition(async () => {
+      const newLikes = isLiked
+        ? likes.filter((id) => id !== currentUserMongoId)
+        : [...likes, currentUserMongoId];
+
+      setLikes(newLikes);
+
       if (isLiked) {
-        setLikes((prev) => prev.filter((id) => id !== currentUserMongoId));
         await unlikePost(postId, currentUserMongoId, pathname);
       } else {
-        setLikes((prev) => [...prev, currentUserMongoId]);
         await likePost(postId, currentUserMongoId, pathname);
       }
+
+      // Broadcast updated likes to everyone
+      const socket = getSocket();
+      socket.emit("post:liked", { postId, likes: newLikes });
     });
   };
 
   const handleRepost = () => {
     startRepostTransition(async () => {
+      const newReposts = isReposted
+        ? reposts.filter((id) => id !== currentUserMongoId)
+        : [...reposts, currentUserMongoId];
+
+      setReposts(newReposts);
+
       if (isReposted) {
-        setReposts((prev) => prev.filter((id) => id !== currentUserMongoId));
         await unrepostPost(postId, currentUserMongoId, pathname);
       } else {
-        setReposts((prev) => [...prev, currentUserMongoId]);
         await repostPost(postId, currentUserMongoId, pathname);
       }
+
+      // Broadcast updated reposts to everyone
+      const socket = getSocket();
+      socket.emit("post:reposted", { postId, reposts: newReposts });
     });
   };
 
