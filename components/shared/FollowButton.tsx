@@ -53,7 +53,7 @@ function FollowButton({
     <Button
       onClick={handleFollow}
       disabled={isLoading}
-      className={`${isFollowingState ? "bg-dark-4" : "bg-primary-500"} text-light-1`}
+      className={`${isFollowingState ? "bg-dark-4" : "bg-primary-500"} text-light-1 cursor-pointer`}
     >
       {isLoading ? "Loading..." : isFollowingState ? "Unfollow" : "Follow"}
     </Button>

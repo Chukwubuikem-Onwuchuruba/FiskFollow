@@ -59,7 +59,11 @@ async function Page({ params }: { params: { id: string } }) {
         <Tabs defaultValue="posts" className="w-full">
           <TabsList className="tab">
             {profileTabs.map((tab) => (
-              <TabsTrigger key={tab.label} value={tab.value} className="tab">
+              <TabsTrigger
+                key={tab.label}
+                value={tab.value}
+                className="tab cursor-pointer"
+              >
                 <Image
                   src={tab.icon}
                   alt={tab.label}
