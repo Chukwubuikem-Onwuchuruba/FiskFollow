@@ -28,14 +28,19 @@ function DeletePost({
   return (
     <Image
       src="/assets/delete.svg"
-      alt="delte"
+      alt="delete"
       width={18}
       height={18}
       className="cursor-pointer object-contain"
       onClick={async () => {
         await deletePost(JSON.parse(postId), pathname);
-        if (!parentId || !isComment) {
+
+        if (isComment && parentId && pathname.includes(JSON.parse(postId))) {
+          router.push(`/post/${parentId}`);
+        } else if (pathname.includes(JSON.parse(postId))) {
           router.push("/");
+        } else {
+          router.refresh();
         }
       }}
     />
