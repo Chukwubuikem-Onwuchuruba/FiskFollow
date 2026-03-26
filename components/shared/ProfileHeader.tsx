@@ -1,6 +1,14 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ReactNode } from "react";
+import FollowListModal from "./FollowListModal";
+
+interface FollowUser {
+  id: string;
+  name: string;
+  username: string;
+  image: string;
+}
 
 interface Props {
   accountId: string;
@@ -12,6 +20,8 @@ interface Props {
   classification?: string;
   followersCount?: number;
   followingCount?: number;
+  followers?: FollowUser[];
+  following?: FollowUser[];
   type?: string;
   children?: ReactNode;
 }
@@ -26,6 +36,8 @@ function ProfileHeader({
   classification,
   followersCount = 0,
   followingCount = 0,
+  followers = [],
+  following = [],
   type,
   children,
 }: Props) {
@@ -53,24 +65,12 @@ function ProfileHeader({
               </p>
             )}
 
-            <div className="flex gap-8 mt-2">
-              <div className="flex flex-col items-center">
-                <span className="text-light-1 text-small-semibold">
-                  {followersCount}
-                </span>
-                <span className="text-gray-1 text-subtle-medium">
-                  Followers
-                </span>
-              </div>
-              <div className="flex flex-col items-center">
-                <span className="text-light-1 text-small-semibold">
-                  {followingCount}
-                </span>
-                <span className="text-gray-1 text-subtle-medium">
-                  Following
-                </span>
-              </div>
-            </div>
+            <FollowListModal
+              followers={followers}
+              following={following}
+              followersCount={followersCount}
+              followingCount={followingCount}
+            />
           </div>
         </div>
 

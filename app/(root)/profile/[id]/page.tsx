@@ -53,6 +53,22 @@ async function Page({ params }: { params: { id: string } }) {
         classification={userInfo.classification}
         followersCount={userInfo.followers?.length || 0}
         followingCount={userInfo.following?.length || 0}
+        followers={
+          userInfo.followers?.map((f: any) => ({
+            id: f.id,
+            name: f.name,
+            username: f.username,
+            image: f.image,
+          })) || []
+        }
+        following={
+          userInfo.following?.map((f: any) => ({
+            id: f.id,
+            name: f.name,
+            username: f.username,
+            image: f.image,
+          })) || []
+        }
       >
         {/* Only show follow button if it's not the user's own profile */}
         {!isOwnProfile && currentUserInfo && (
