@@ -158,7 +158,10 @@ export async function fetchUsers({
     connectToDB();
 
     const skipAmount = (pageNumber - 1) * pageSize;
-    const regex = new RegExp(searchString, "i");
+    const regex = new RegExp(
+      searchString.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      "i",
+    );
 
     const query: QueryFilter<typeof User> = {
       id: { $ne: userId },
