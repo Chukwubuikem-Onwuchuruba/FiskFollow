@@ -103,7 +103,9 @@ export async function isFollowing({
     connectToDB();
 
     const user = await User.findById(followerId);
-    return user?.following.includes(followingId) || false;
+    return (
+      user?.following.some((id: any) => id.toString() === followingId) || false
+    );
   } catch (error: any) {
     throw new Error(`Failed to check follow status: ${error.message}`);
   }

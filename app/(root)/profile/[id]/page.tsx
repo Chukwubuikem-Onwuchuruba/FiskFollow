@@ -12,6 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { fetchUser } from "@/lib/actions/user.actions";
 import LikesTab from "@/components/shared/LikesTab";
 import MediaTab from "@/components/shared/MediaTab";
+import { isFollowing } from "@/lib/actions/follower.actions";
 
 async function Page({ params }: { params: { id: string } }) {
   const { id } = await params;
@@ -33,6 +34,13 @@ async function Page({ params }: { params: { id: string } }) {
   // Check if this is the current user's profile
   const isOwnProfile = userInfo.id === user.id;
 
+  const followStatus = currentUserInfo
+    ? await isFollowing({
+        followerId: currentUserInfo._id.toString(),
+        followingId: userInfo._id.toString(),
+      })
+    : false;
+
   return (
     <section>
       <ProfileHeader
@@ -51,6 +59,7 @@ async function Page({ params }: { params: { id: string } }) {
           <FollowButton
             followerId={currentUserInfo._id.toString()} // Current user's MongoDB ID
             followingId={userInfo._id.toString()} // Profile user's MongoDB ID
+            initialIsFollowing={followStatus}
           />
         )}
       </ProfileHeader>
