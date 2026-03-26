@@ -254,11 +254,31 @@ export async function getActivity(userId: string) {
       }
     }
 
+    // Follows: other users who followed this user
+    const currentUser = await User.findById(userId).populate({
+      path: "followers",
+      model: User,
+      select: "name image _id id",
+    });
+
+    const followActivities: any[] = [];
+    for (const follower of currentUser?.followers || []) {
+      if (follower._id.toString() === userId.toString()) continue;
+      followActivities.push({
+        _id: `follow-${userId}-${follower._id}`,
+        type: "follow" as const,
+        author: follower,
+        postId: null,
+        createdAt: new Date(),
+      });
+    }
+
     // Merge and sort by most recent
     const allActivity = [
       ...replyActivities,
       ...likeActivities,
       ...repostActivities,
+      ...followActivities,
     ].sort(
       (a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
