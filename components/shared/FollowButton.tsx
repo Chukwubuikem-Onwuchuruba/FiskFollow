@@ -2,23 +2,22 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import {
-  followUser,
-  unfollowUser,
-  isFollowing,
-} from "@/lib/actions/follower.actions";
+import { followUser, unfollowUser } from "@/lib/actions/follower.actions";
 import { Button } from "@/components/ui/button";
+import { getSocket } from "@/lib/socket";
 
 interface FollowButtonProps {
-  followerId: string; // Current user's MongoDB _id
-  followingId: string; // Profile user's MongoDB _id
+  followerId: string;
+  followingId: string;
   initialIsFollowing?: boolean;
+  initialFollowersCount?: number;
 }
 
 function FollowButton({
   followerId,
   followingId,
   initialIsFollowing = false,
+  initialFollowersCount = 0,
 }: FollowButtonProps) {
   const [isFollowingState, setIsFollowingState] = useState(initialIsFollowing);
   const [isLoading, setIsLoading] = useState(false);
@@ -33,14 +32,27 @@ function FollowButton({
           followingId,
           path: window.location.pathname,
         });
+        setIsFollowingState(false);
+
+        const socket = getSocket();
+        socket.emit("user:unfollowed", {
+          followingId,
+          followersCount: initialFollowersCount - 1,
+        });
       } else {
         await followUser({
           followerId,
           followingId,
           path: window.location.pathname,
         });
+        setIsFollowingState(true);
+
+        const socket = getSocket();
+        socket.emit("user:followed", {
+          followingId,
+          followersCount: initialFollowersCount + 1,
+        });
       }
-      setIsFollowingState(!isFollowingState);
       router.refresh();
     } catch (error) {
       console.error("Error toggling follow:", error);

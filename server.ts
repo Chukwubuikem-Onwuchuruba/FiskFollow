@@ -84,6 +84,20 @@ io.on("connection", (socket) => {
   socket.on("post:reposted", (data: { postId: string; reposts: string[] }) => {
     io.emit("post:repostsUpdated", data);
   });
+
+  socket.on(
+    "user:followed",
+    (data: { followingId: string; followersCount: number }) => {
+      io.emit("user:followersUpdated", data);
+    },
+  );
+
+  socket.on(
+    "user:unfollowed",
+    (data: { followingId: string; followersCount: number }) => {
+      io.emit("user:followersUpdated", data);
+    },
+  );
 });
 
 console.log("> Socket.io server ready on port 3001");

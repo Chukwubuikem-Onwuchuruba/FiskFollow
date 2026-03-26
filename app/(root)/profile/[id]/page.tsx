@@ -69,6 +69,7 @@ async function Page({ params }: { params: { id: string } }) {
             image: f.image,
           })) || []
         }
+        profileUserId={userInfo._id.toString()}
       >
         {/* Only show follow button if it's not the user's own profile */}
         {!isOwnProfile && currentUserInfo && (
@@ -76,6 +77,7 @@ async function Page({ params }: { params: { id: string } }) {
             followerId={currentUserInfo._id.toString()} // Current user's MongoDB ID
             followingId={userInfo._id.toString()} // Profile user's MongoDB ID
             initialIsFollowing={followStatus}
+            initialFollowersCount={userInfo.followers?.length || 0}
           />
         )}
       </ProfileHeader>

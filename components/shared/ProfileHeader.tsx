@@ -24,6 +24,7 @@ interface Props {
   following?: FollowUser[];
   type?: string;
   children?: ReactNode;
+  profileUserId?: string;
 }
 
 function ProfileHeader({
@@ -40,6 +41,7 @@ function ProfileHeader({
   following = [],
   type,
   children,
+  profileUserId,
 }: Props) {
   return (
     <div className="flex w-full flex-col justify-start">
@@ -66,6 +68,7 @@ function ProfileHeader({
             )}
 
             <FollowListModal
+              profileUserId={profileUserId || ""}
               followers={followers}
               following={following}
               followersCount={followersCount}

@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { X } from "lucide-react";
+import { getSocket } from "@/lib/socket";
 
 interface User {
   id: string;
@@ -13,6 +14,7 @@ interface User {
 }
 
 interface Props {
+  profileUserId: string;
   followers: User[];
   following: User[];
   followersCount: number;
@@ -20,6 +22,7 @@ interface Props {
 }
 
 export default function FollowListModal({
+  profileUserId,
   followers,
   following,
   followersCount,
@@ -27,17 +30,38 @@ export default function FollowListModal({
 }: Props) {
   const [open, setOpen] = useState(false);
   const [tab, setTab] = useState<"followers" | "following">("followers");
+  const [localFollowersCount, setLocalFollowersCount] =
+    useState(followersCount);
+
+  useEffect(() => {
+    setLocalFollowersCount(followersCount);
+  }, [followersCount]);
+
+  useEffect(() => {
+    const socket = getSocket();
+
+    socket.on(
+      "user:followersUpdated",
+      (data: { followingId: string; followersCount: number }) => {
+        if (data.followingId === profileUserId) {
+          setLocalFollowersCount(data.followersCount);
+        }
+      },
+    );
+
+    return () => {
+      socket.off("user:followersUpdated");
+    };
+  }, [profileUserId]);
 
   const openFollowers = () => {
     setTab("followers");
     setOpen(true);
   };
-
   const openFollowing = () => {
     setTab("following");
     setOpen(true);
   };
-
   const list = tab === "followers" ? followers : following;
 
   return (
@@ -48,7 +72,7 @@ export default function FollowListModal({
           className="flex flex-col items-center cursor-pointer hover:opacity-80 transition"
         >
           <span className="text-light-1 text-small-semibold">
-            {followersCount}
+            {localFollowersCount}
           </span>
           <span className="text-gray-1 text-subtle-medium">Followers</span>
         </button>
@@ -72,7 +96,6 @@ export default function FollowListModal({
             className="bg-dark-2 rounded-xl w-full max-w-md mx-4 overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Modal header */}
             <div className="flex items-center justify-between p-4 border-b border-dark-4">
               <div className="flex gap-6">
                 <button
@@ -104,7 +127,6 @@ export default function FollowListModal({
               </button>
             </div>
 
-            {/* User list */}
             <div className="overflow-y-auto max-h-96">
               {list.length === 0 ? (
                 <p className="text-center text-light-3 text-small-regular py-10">
