@@ -1,8 +1,15 @@
 import { Server } from "socket.io";
 
+// const io = new Server(3001, {
+//   cors: {
+//     origin: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+//     methods: ["GET", "POST"],
+//   },
+// });
+
 const io = new Server(3001, {
   cors: {
-    origin: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL || "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });

@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "concurrently \"next dev\" \"ts-node --project tsconfig.server.json server.ts\"",
     "build": "next build",
-    "start": "concurrently \"next start\" \"ts-node --project tsconfig.server.json server.ts\"",
+    "start": "next start",
+    "start:socket": "ts-node --project tsconfig.server.json server.ts",
     "lint": "eslint"
   },
   "dependencies": {
