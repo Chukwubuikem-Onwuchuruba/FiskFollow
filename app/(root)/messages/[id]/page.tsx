@@ -46,13 +46,15 @@ async function ChatPage({ params }: { params: Promise<{ id: string }> }) {
         currentUserMongoId={userMongoId}
         activeConversationId={id}
       />
-      <ChatWindow
-        conversation={JSON.parse(JSON.stringify(conversation))}
-        initialMessages={messages}
-        currentUserMongoId={userMongoId}
-        currentUserImage={userInfo.image}
-        currentUserName={userInfo.name}
-      />
+      <div className="flex flex-1 w-full">
+        <ChatWindow
+          conversation={JSON.parse(JSON.stringify(conversation))}
+          initialMessages={messages}
+          currentUserMongoId={userMongoId}
+          currentUserImage={userInfo.image}
+          currentUserName={userInfo.name}
+        />
+      </div>
     </div>
   );
 }

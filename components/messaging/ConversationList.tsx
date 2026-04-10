@@ -18,7 +18,6 @@ function getConversationDisplay(convo: any, currentUserMongoId: string) {
       .slice(0, 3)
       .map((p: any) => p.name)
       .join(", ");
-
     return {
       name: convo.name,
       image: convo.image || null,
@@ -26,7 +25,6 @@ function getConversationDisplay(convo: any, currentUserMongoId: string) {
       isGroup: true,
     };
   }
-
   const other = convo.participants.find(
     (p: any) => p._id !== currentUserMongoId,
   );
@@ -46,7 +44,11 @@ export default function ConversationList({
   const router = useRouter();
 
   return (
-    <div className="w-full md:w-80 shrink-0 border-r border-dark-4 flex flex-col h-full">
+    <div
+      className={`${
+        activeConversationId ? "hidden md:flex" : "flex"
+      } w-full md:w-80 shrink-0 border-r border-dark-4 flex-col h-full`}
+    >
       {/* Header */}
       <div className="p-4 border-b border-dark-4 flex items-center justify-between">
         <h2 className="text-heading4-medium text-light-1">Messages</h2>
@@ -81,7 +83,6 @@ export default function ConversationList({
                   isActive ? "bg-dark-3" : ""
                 }`}
               >
-                {/* Avatar */}
                 <div className="relative h-12 w-12 shrink-0">
                   {display.image ? (
                     <Image
@@ -97,7 +98,6 @@ export default function ConversationList({
                   )}
                 </div>
 
-                {/* Info */}
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
                     <p className="text-small-semibold text-light-1 truncate">

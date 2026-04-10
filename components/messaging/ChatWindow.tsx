@@ -21,6 +21,7 @@ import { getSocket } from "@/lib/socket";
 import { useUploadThing } from "@/lib/uploadthing";
 import Link from "next/link";
 import EmojiPicker from "../shared/EmojiPicker";
+import { ArrowLeft } from "lucide-react";
 
 interface Props {
   conversation: any;
@@ -220,6 +221,14 @@ export default function ChatWindow({
     <div className="flex flex-1 flex-col h-full overflow-hidden">
       {/* Header */}
       <div className="flex items-center gap-3 p-4 border-b border-dark-4 shrink-0">
+        {/* Back button — mobile only */}
+        <Link
+          href="/messages"
+          className="md:hidden text-gray-1 hover:text-light-1 transition mr-1"
+        >
+          <ArrowLeft className="w-5 h-5" />
+        </Link>
+
         <Link
           href={conversation.isGroup ? "#" : `/profile/${otherParticipant?.id}`}
           className={`flex items-center gap-3 ${!conversation.isGroup && "hover:opacity-80 transition cursor-pointer"}`}
